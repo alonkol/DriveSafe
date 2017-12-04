@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     // band
     private BandClient client = null;
 
-    public Activity that = this;
+    public Activity mainActivityReference = this;
 
     private BandRRIntervalEventListener mRRIntervalEventListener = new BandRRIntervalEventListener() {
         @Override
@@ -129,12 +129,10 @@ public class MainActivity extends AppCompatActivity {
                     {
                         // TODO
                     }
-                    FaceLandmarks landmarks = result[0].faceLandmarks;
-                    // TODO: change to sqrt(dx^2 + dy^2). Currently vertical only
-                    // TODO: why is eyeLeftBottom higher than eyeLeftTop???
-                    double occlusionLeft = landmarks.eyeLeftTop.y - landmarks.eyeLeftBottom.y;
-                    double occlusionRight = landmarks.eyeRightTop.y - landmarks.eyeRightBottom.y;
-                    double averageOcclusion = (occlusionLeft + occlusionRight) / 2;
+
+                    double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks);
+
+                    // TODO: On consistent low occlusion, sound alert
 
                 } catch (Exception e) {
                     // TODO
@@ -143,6 +141,18 @@ public class MainActivity extends AppCompatActivity {
                 return result;
             }
         };
+    }
+
+    public double getAverageOcclusion(FaceLandmarks landmarks){
+        double occlusionLeft = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
+        double occlusionRight = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
+        return (occlusionLeft + occlusionRight) / 2;
+    }
+
+    public double getDistance(FeatureCoordinate feat1, FeatureCoordinate feat2){
+        double deltaX = feat1.x - feat2.x;
+        double deltaY = feat1.y - feat2.y;
+        return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
     }
 
     public Face[] myDetect(ByteArrayOutputStream byteArrayOutputStream, boolean returnFaceId, boolean returnFaceLandmarks, String returnFaceAttributes) throws ClientException, IOException {
@@ -172,20 +182,17 @@ public class MainActivity extends AppCompatActivity {
                     int hardwareVersion = Integer.parseInt(client.getHardwareVersion().await());
                     if (hardwareVersion >= 20) {
 
-                        if (client.getSensorManager().getCurrentHeartRateConsent() == UserConsent.GRANTED) {
-                            client.getSensorManager().registerRRIntervalEventListener(mRRIntervalEventListener);
-                        } else {
-                            client.getSensorManager().requestHeartRateConsent(that, new HeartRateConsentListener(){
+                        if (client.getSensorManager().getCurrentHeartRateConsent() != UserConsent.GRANTED) {
+                            client.getSensorManager().requestHeartRateConsent(mainActivityReference, new HeartRateConsentListener(){
 
                                 @Override
                                 public void userAccepted(boolean b) {
 
                                 }
                             });
-
-                            // appendToUI("You have not given this application consent to access heart rate data yet."
-                            //        + " Please press the Heart Rate Consent button.\n");
                         }
+
+                        client.getSensorManager().registerRRIntervalEventListener(mRRIntervalEventListener);
                     } else {
                         // appendToUI("The RR Interval sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
                     }
@@ -205,11 +212,10 @@ public class MainActivity extends AppCompatActivity {
                         exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
                         break;
                 }
-                // appendToUI(exceptionMessage);
+                // TODO: do something with exception?
 
             } catch (Exception e) {
-                Exception e2 = e;
-                // appendToUI(e.getMessage());
+                // TODO: do something with exception?
             }
             return null;
         }
