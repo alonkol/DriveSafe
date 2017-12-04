@@ -22,7 +22,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Browse"
+        android:text="Take Picture"
         android:id="@+id/button1"
         android:layout_alignParentBottom="true" />
 </RelativeLayout>
