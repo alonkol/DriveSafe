@@ -17,11 +17,6 @@
     import android.hardware.Camera;
     import android.hardware.Camera.PictureCallback;
     import android.os.AsyncTask;
-    import android.os.Environment;
-    import android.provider.MediaStore;
-    import android.util.Log;
-    import android.widget.ImageView;
-    import android.widget.Toast;
 
     import com.microsoft.projectoxford.face.contract.Face;
     import com.microsoft.projectoxford.face.contract.FaceRectangle;
@@ -44,7 +39,7 @@
         public void onPictureTaken(byte[] data, Camera camera) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
             MainActivity.imageView.setImageBitmap(bitmap);
-            detectAndFrame(bitmap);
+            // detectAndFrame(bitmap);
         }
 
         // Detect faces by uploading face images
