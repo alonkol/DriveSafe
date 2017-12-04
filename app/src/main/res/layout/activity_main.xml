@@ -7,24 +7,56 @@
     tools:context="com.drivesafe.drivesafe.MainActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="5px"
-    android:paddingRight="5px"
-    android:paddingTop="5px"
-    android:paddingBottom="5px" tools:context=".MainActivity">
-
-    <ImageView
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/imageView1"
-        android:layout_above="@+id/button1" />
+        android:layout_height="match_parent"
+        android:paddingBottom="5px"
+        android:paddingLeft="5px"
+        android:paddingRight="5px"
+        android:paddingTop="5px"
+        tools:context=".MainActivity">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Browse"
-        android:id="@+id/button1"
-        android:layout_alignParentBottom="true" />
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/button_concent"
+            android:layout_alignStart="@+id/button1" />
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="Browse" />
+
+        <Button
+            android:id="@+id/button_concent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_hr"
+            android:layout_alignStart="@+id/imageView1"
+            android:layout_marginBottom="15dp"
+            android:text="give concent" />
+
+        <Button
+            android:id="@+id/button_hr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button1"
+            android:layout_alignStart="@+id/imageView1"
+            android:layout_marginBottom="14dp"
+            android:text="get Heart Rate" />
+
+        <TextView
+            android:id="@+id/HR_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_concent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="183dp"
+            android:text="TextView"
+            android:visibility="visible" />
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>
