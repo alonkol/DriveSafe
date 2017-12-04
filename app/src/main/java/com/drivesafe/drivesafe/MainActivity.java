@@ -3,6 +3,7 @@ package com.drivesafe.drivesafe;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.app.*;
@@ -51,10 +52,6 @@ public class MainActivity extends AppCompatActivity {
     public static Camera.PictureCallback pictureCallback;
     public Camera.CameraInfo cameraInfo;
 
-
-    // copied from FaceServiceRestClient
-    private final WebServiceRequest mRestCall = new WebServiceRequest(sub_key);
-    private Gson mGson = (new GsonBuilder()).setDateFormat("M/d/yyyy h:m:s a").create();
 
     // band
     private BandClient client = null;
@@ -130,75 +127,6 @@ int cameraId = -1;
             }
         }
         return cameraId;
-    }
-
-    private void detectAndFrame(final Bitmap imageBitmap)
-    {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-
-        DetectionTask().execute(outputStream);
-    }
-
-    public AsyncTask<ByteArrayOutputStream, String, Face[]> DetectionTask(){
-        return new AsyncTask<ByteArrayOutputStream, String, Face[]>() {
-            @Override
-            protected Face[] doInBackground(ByteArrayOutputStream... params) {
-                Face[] result = new Face[]{};
-                try {
-                    result = myDetect(
-                            params[0], // image stream
-                            true,         // returnFaceId
-                            true,        // returnFaceLandmarks
-                            "age,occlusion"           // returnFaceAttributes: a string like "age, gender"
-                    );
-                    if (result == null)
-                    {
-                        // TODO
-                    }
-
-                    double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks);
-
-                    // TODO: On consistent low occlusion, sound alert
-
-                } catch (Exception e) {
-                    // TODO
-                }
-
-                return result;
-            }
-        };
-    }
-
-    public double getAverageOcclusion(FaceLandmarks landmarks){
-        double occlusionLeft = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
-        double occlusionRight = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
-        return (occlusionLeft + occlusionRight) / 2;
-    }
-
-    public double getDistance(FeatureCoordinate feat1, FeatureCoordinate feat2){
-        double deltaX = feat1.x - feat2.x;
-        double deltaY = feat1.y - feat2.y;
-        return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-    }
-
-    public Face[] myDetect(ByteArrayOutputStream byteArrayOutputStream, boolean returnFaceId, boolean returnFaceLandmarks, String returnFaceAttributes) throws ClientException, IOException {
-        Map<String, Object> params = new HashMap();
-        params.put("returnFaceId", Boolean.valueOf(returnFaceId));
-        params.put("returnFaceLandmarks", Boolean.valueOf(returnFaceLandmarks));
-        params.put("returnFaceAttributes", returnFaceAttributes);
-
-        String path = String.format("%s/%s", new Object[]{this.api_endpoint, "detect"});
-        String uri = WebServiceRequest.getUrl(path, params);
-
-        byte[] data = byteArrayOutputStream.toByteArray();
-        params.clear();
-        params.put("data", data);
-        String json = (String)this.mRestCall.request(uri, RequestMethod.POST, params, "application/octet-stream");
-        Type listType = (new TypeToken<List<Face>>() {
-        }).getType();
-        List<Face> faces = (List)this.mGson.fromJson(json, listType);
-        return faces.toArray(new Face[faces.size()]);
     }
 
     private class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
