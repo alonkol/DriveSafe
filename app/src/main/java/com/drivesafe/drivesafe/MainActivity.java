@@ -16,6 +16,13 @@ import android.provider.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.microsoft.band.BandClient;
+import com.microsoft.band.BandClientManager;
+import com.microsoft.band.BandException;
+import com.microsoft.band.BandInfo;
+import com.microsoft.band.ConnectionState;
+import com.microsoft.band.UserConsent;
+import com.microsoft.band.sensors.HeartRateConsentListener;
 import com.microsoft.projectoxford.face.*;
 import com.microsoft.projectoxford.face.common.RequestMethod;
 import com.microsoft.projectoxford.face.contract.*;
@@ -24,11 +31,16 @@ import com.microsoft.projectoxford.face.rest.WebServiceRequest;
 
 
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import com.microsoft.band.sensors.BandRRIntervalEventListener;
+import com.microsoft.band.sensors.BandRRIntervalEvent;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +53,19 @@ public class MainActivity extends AppCompatActivity {
     private final WebServiceRequest mRestCall = new WebServiceRequest(sub_key);
     private Gson mGson = (new GsonBuilder()).setDateFormat("M/d/yyyy h:m:s a").create();
 
+    // band
+    private BandClient client = null;
+
+    public Activity that = this;
+
+    private BandRRIntervalEventListener mRRIntervalEventListener = new BandRRIntervalEventListener() {
+        @Override
+        public void onBandRRIntervalChanged(final BandRRIntervalEvent event) {
+            if (event != null) {
+                double interval = event.getInterval();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
         });
         detectionProgressDialog = new ProgressDialog(this);
-
+        new RRIntervalSubscriptionTask().execute();
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -84,39 +110,39 @@ public class MainActivity extends AppCompatActivity {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
-        AsyncTask<ByteArrayOutputStream, String, Face[]> detectTask =
-                new AsyncTask<ByteArrayOutputStream, String, Face[]>() {
-                    @Override
-                    protected Face[] doInBackground(ByteArrayOutputStream... params) {
-                        Face[] result = new Face[]{};
-                        try {
-                            result = myDetect(
-                                    params[0], // image stream
-                                    true,         // returnFaceId
-                                    true,        // returnFaceLandmarks
-                                    "age,occlusion"           // returnFaceAttributes: a string like "age, gender"
-                            );
-                            if (result == null)
-                            {
-                                // TODO
-                            }
-                            FaceLandmarks landmarks = result[0].faceLandmarks;
-                            // TODO: change to sqrt(dx^2 + dy^2). Currently vertical only
-                            // TODO: why is eyeLeftBottom higher than eyeLeftTop???
-                            double occlusionLeft = landmarks.eyeLeftTop.y - landmarks.eyeLeftBottom.y;
-                            double occlusionRight = landmarks.eyeRightTop.y - landmarks.eyeRightBottom.y;
-                            double averageOcclusion = (occlusionLeft + occlusionRight) / 2;
+        DetectionTask().execute(outputStream);
+    }
 
-                        } catch (Exception e) {
-                            // TODO
-                        }
-
-                        return result;
+    public AsyncTask<ByteArrayOutputStream, String, Face[]> DetectionTask(){
+        return new AsyncTask<ByteArrayOutputStream, String, Face[]>() {
+            @Override
+            protected Face[] doInBackground(ByteArrayOutputStream... params) {
+                Face[] result = new Face[]{};
+                try {
+                    result = myDetect(
+                            params[0], // image stream
+                            true,         // returnFaceId
+                            true,        // returnFaceLandmarks
+                            "age,occlusion"           // returnFaceAttributes: a string like "age, gender"
+                    );
+                    if (result == null)
+                    {
+                        // TODO
                     }
-                };
-        detectTask.execute(outputStream);
+                    FaceLandmarks landmarks = result[0].faceLandmarks;
+                    // TODO: change to sqrt(dx^2 + dy^2). Currently vertical only
+                    // TODO: why is eyeLeftBottom higher than eyeLeftTop???
+                    double occlusionLeft = landmarks.eyeLeftTop.y - landmarks.eyeLeftBottom.y;
+                    double occlusionRight = landmarks.eyeRightTop.y - landmarks.eyeRightBottom.y;
+                    double averageOcclusion = (occlusionLeft + occlusionRight) / 2;
 
+                } catch (Exception e) {
+                    // TODO
+                }
 
+                return result;
+            }
+        };
     }
 
     public Face[] myDetect(ByteArrayOutputStream byteArrayOutputStream, boolean returnFaceId, boolean returnFaceLandmarks, String returnFaceAttributes) throws ClientException, IOException {
@@ -137,6 +163,72 @@ public class MainActivity extends AppCompatActivity {
         List<Face> faces = (List)this.mGson.fromJson(json, listType);
         return faces.toArray(new Face[faces.size()]);
     }
+
+    private class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                if (getConnectedBandClient()) {
+                    int hardwareVersion = Integer.parseInt(client.getHardwareVersion().await());
+                    if (hardwareVersion >= 20) {
+
+                        if (client.getSensorManager().getCurrentHeartRateConsent() == UserConsent.GRANTED) {
+                            client.getSensorManager().registerRRIntervalEventListener(mRRIntervalEventListener);
+                        } else {
+                            client.getSensorManager().requestHeartRateConsent(that, new HeartRateConsentListener(){
+
+                                @Override
+                                public void userAccepted(boolean b) {
+
+                                }
+                            });
+
+                            // appendToUI("You have not given this application consent to access heart rate data yet."
+                            //        + " Please press the Heart Rate Consent button.\n");
+                        }
+                    } else {
+                        // appendToUI("The RR Interval sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
+                    }
+                } else {
+                    //appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
+                }
+            } catch (BandException e) {
+                String exceptionMessage="";
+                switch (e.getErrorType()) {
+                    case UNSUPPORTED_SDK_VERSION_ERROR:
+                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
+                        break;
+                    case SERVICE_ERROR:
+                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
+                        break;
+                    default:
+                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
+                        break;
+                }
+                // appendToUI(exceptionMessage);
+
+            } catch (Exception e) {
+                Exception e2 = e;
+                // appendToUI(e.getMessage());
+            }
+            return null;
+        }
+    }
+
+    private boolean getConnectedBandClient() throws InterruptedException, BandException {
+        if (client == null) {
+            BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
+            if (devices.length == 0) {
+                return false;
+            }
+            client = BandClientManager.getInstance().create(getBaseContext(), devices[0]);
+        } else if (ConnectionState.CONNECTED == client.getConnectionState()) {
+            return true;
+        }
+
+        return ConnectionState.CONNECTED == client.connect().await();
+    }
+
 
 }
 
