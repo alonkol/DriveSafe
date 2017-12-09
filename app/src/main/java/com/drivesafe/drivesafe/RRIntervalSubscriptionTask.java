@@ -1,6 +1,7 @@
 package com.drivesafe.drivesafe;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandClientManager;
@@ -15,6 +16,7 @@ import com.microsoft.band.sensors.HeartRateConsentListener;
 class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
 
 
+    private static final String TAG = "RRInterval";
     private MainActivity mainActivity;
 
     // bandx
@@ -61,10 +63,10 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
                     exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
                     break;
             }
-            // TODO: do something with exception?
+            Log.e(this.TAG, exceptionMessage);
 
         } catch (Exception e) {
-            // TODO: do something with exception?
+            e.printStackTrace();
         }
         return null;
     }
@@ -91,13 +93,12 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
 
                 if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Low){
                     // TODO: alert
-                    // TODO: raise photo rate
+                    mainActivity.restartPictureTakerRate(1);
                 }
 
-                if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Medium){
-                    // TODO: raise photo rate
+                else if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Medium){
+                    mainActivity.restartPictureTakerRate(1);
                 }
-
             }
         }
     };

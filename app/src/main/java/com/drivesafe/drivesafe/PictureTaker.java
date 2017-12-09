@@ -8,7 +8,7 @@ import java.util.TimerTask;
 public class PictureTaker extends TimerTask {
     public static Camera camera;
 
-    public void setCamera(){
+    public void setCameraIfNeeded(){
         if (this.camera == null){
             this.camera = MainActivity.camera;
         }
@@ -21,13 +21,13 @@ public class PictureTaker extends TimerTask {
 
     private void take_picture() {
         try{
-            setCamera();
+            setCameraIfNeeded();
             SurfaceTexture st = new SurfaceTexture(0);
             camera.setPreviewTexture(st);
             camera.startPreview();
             camera.takePicture( null, null, MainActivity.pictureCallback);
         }catch (IOException e) {
-
+            e.printStackTrace();
         }
     }
 }

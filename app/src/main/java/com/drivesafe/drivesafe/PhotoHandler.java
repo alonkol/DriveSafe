@@ -34,9 +34,11 @@
         private Gson mGson = (new GsonBuilder()).setDateFormat("M/d/yyyy h:m:s a").create();
 
         private final Context context;
+        private final MainActivity mainActivity;
 
-        public PhotoHandler(Context context) {
+        public PhotoHandler(Context context, MainActivity mainActivity) {
             this.context = context;
+            this.mainActivity = mainActivity;
         }
 
         @Override
@@ -86,13 +88,13 @@
 
                         OcclusionHistory.add(averageOcclusion);
                         if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Low){
-                            // TODO: Increase photo rate
+                            mainActivity.restartPictureTakerRate(1);
                             // TODO: sounds alert
 
                         }
 
                         if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Medium){
-                            // TODO: increase photo rate
+                            mainActivity.restartPictureTakerRate(1);
                         }
 
                     } catch (Exception e) {

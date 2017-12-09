@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                     // permissions were granted, start the app logic
                     initAppLogic();
                 } else {
-                    Log.d(this.TAG, "Permissions were not granted!");
+                    Log.e(this.TAG, "Permissions were not granted!");
                     finish();
                 }
             }
@@ -66,10 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAppLogic(){
-        // Init variables
-        this.timerPictureTaker = new Timer();
-        this.pictureTakerTask = new PictureTaker();
-        this.pictureCallback = new PhotoHandler(getApplicationContext());
+        this.pictureCallback = new PhotoHandler(getApplicationContext(), this);
 
         this.initFrontCamera();
         // Start thread that takes picture every 5 seconds and starts 1.5 seconds after app init
@@ -79,8 +76,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startPictureTaker(int rate){
+        Log.i(this.TAG, "Setting picture taking rate to " + Integer.toString(rate));
+        this.timerPictureTaker = new Timer();
+        this.pictureTakerTask = new PictureTaker();
+        this.timerPictureTaker.schedule(this.pictureTakerTask, 1000, rate * 1000);
+    }
+
+    public void restartPictureTakerRate(int rate){
+        if (this.timerPictureTaker != null){
+            this.timerPictureTaker.cancel();
+        }
         // rate in seconds
-        this.timerPictureTaker.schedule(this.pictureTakerTask, 1500, rate * 1000);
+        startPictureTaker(rate);
     }
 
     private void initFrontCamera(){
