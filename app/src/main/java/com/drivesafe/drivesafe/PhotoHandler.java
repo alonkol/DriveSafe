@@ -64,6 +64,8 @@
 
         public AsyncTask<ByteArrayOutputStream, String, Face[]> DetectionTask(){
             return new AsyncTask<ByteArrayOutputStream, String, Face[]>() {
+                public String occlusionTag = "OcclusionDetector";
+
                 @Override
                 protected Face[] doInBackground(ByteArrayOutputStream... params) {
                     Face[] result = new Face[]{};
@@ -80,11 +82,11 @@
                         }
 
                         double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks);
-                        Log.i("Really important Really", Double.toString(averageOcclusion));
+                        Log.i(this.occlusionTag, "Found Occclusion: " + Double.toString(averageOcclusion));
                         // TODO: On consistent low occlusion, sound alert
 
                     } catch (Exception e) {
-                        Log.i("Really important Really","Failed");
+                        Log.i(this.occlusionTag,"Failed");
                     }
 
                     return result;
