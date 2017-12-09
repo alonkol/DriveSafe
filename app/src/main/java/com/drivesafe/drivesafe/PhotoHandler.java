@@ -6,6 +6,7 @@
     import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
+    import java.util.UUID;
 
     import android.content.Context;
     import android.graphics.Bitmap;
@@ -14,6 +15,7 @@
     import android.hardware.Camera;
     import android.hardware.Camera.PictureCallback;
     import android.os.AsyncTask;
+    import android.util.Log;
 
     import com.google.gson.Gson;
     import com.google.gson.GsonBuilder;
@@ -60,11 +62,11 @@
             DetectionTask().execute(outputStream);
         }
 
-        public AsyncTask<ByteArrayOutputStream, String, com.drivesafe.drivesafe.Face[]> DetectionTask(){
-            return new AsyncTask<ByteArrayOutputStream, String, com.drivesafe.drivesafe.Face[]>() {
+        public AsyncTask<ByteArrayOutputStream, String, Face[]> DetectionTask(){
+            return new AsyncTask<ByteArrayOutputStream, String, Face[]>() {
                 @Override
-                protected com.drivesafe.drivesafe.Face[] doInBackground(ByteArrayOutputStream... params) {
-                    com.drivesafe.drivesafe.Face[] result = new com.drivesafe.drivesafe.Face[]{};
+                protected Face[] doInBackground(ByteArrayOutputStream... params) {
+                    Face[] result = new Face[]{};
                     try {
                         result = myDetect(
                                 params[0], // image stream
@@ -78,11 +80,11 @@
                         }
 
                         double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks);
-
+                        Log.i("Really important Really", Double.toString(averageOcclusion));
                         // TODO: On consistent low occlusion, sound alert
 
                     } catch (Exception e) {
-                        // TODO
+                        Log.i("Really important Really","Failed");
                     }
 
                     return result;
@@ -102,7 +104,7 @@
             return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
         }
 
-        public com.drivesafe.drivesafe.Face[] myDetect(ByteArrayOutputStream byteArrayOutputStream, boolean returnFaceId, boolean returnFaceLandmarks, String returnFaceAttributes) throws ClientException, IOException {
+        public Face[] myDetect(ByteArrayOutputStream byteArrayOutputStream, boolean returnFaceId, boolean returnFaceLandmarks, String returnFaceAttributes) throws ClientException, IOException {
             Map<String, Object> params = new HashMap();
             params.put("returnFaceId", Boolean.valueOf(returnFaceId));
             params.put("returnFaceLandmarks", Boolean.valueOf(returnFaceLandmarks));
@@ -115,9 +117,31 @@
             params.clear();
             params.put("data", data);
             String json = (String)this.mRestCall.request(uri, RequestMethod.POST, params, "application/octet-stream");
-            Type listType = (new TypeToken<List<com.drivesafe.drivesafe.Face>>() {
+            Type listType = (new TypeToken<List<Face>>() {
             }).getType();
-            List<com.drivesafe.drivesafe.Face> faces = (List)this.mGson.fromJson(json, listType);
-            return faces.toArray(new com.drivesafe.drivesafe.Face[faces.size()]);
+            List<Face> faces = (List)this.mGson.fromJson(json, listType);
+            return faces.toArray(new Face[faces.size()]);
+        }
+
+        static class Face {
+            public UUID faceId;
+            public FaceRectangle faceRectangle;
+            public FaceLandmarks faceLandmarks;
+            public FaceAttribute faceAttributes;
+
+            public Face() {
+            }
+        }
+
+        // TODO: if necessary, add property for Occlusion etc.
+        static class FaceAttribute {
+            public double age;
+            public String gender;
+            public double smile;
+            public FacialHair facialHair;
+            public HeadPose headPose;
+
+            public FaceAttribute() {
+            }
         }
     }
