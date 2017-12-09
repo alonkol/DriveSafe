@@ -12,8 +12,8 @@ class OcclusionHistory {
     private static double avg;
 
     private static final int numberOfLatestIndexesToFocus = 3;
-    private static final double highDeltaThreshold = 5.0;
-    private static final double mediumDeltaThreshold = 2.5;
+    private static final double highDeltaPercentThreshold = 0.4;
+    private static final double mediumDeltaPercentThreshold = 0.2;
     private static final int minHistory = 5;
     private static final int maxHistory = 200;
 
@@ -34,11 +34,11 @@ class OcclusionHistory {
 
         double averageDelta = getAverageDeltaOfLatestData(numberOfLatestIndexesToFocus);
 
-        if (averageDelta > highDeltaThreshold){
+        if (averageDelta > highDeltaPercentThreshold){
             return AlertnessLevel.Low;
         }
 
-        if (averageDelta > mediumDeltaThreshold){
+        if (averageDelta > mediumDeltaPercentThreshold){
             return AlertnessLevel.Medium;
         }
 
@@ -52,7 +52,9 @@ class OcclusionHistory {
             deltaSum += (avg - history.get(history.size() - 1 - i));
         }
 
-        return deltaSum / scope;
+        double averageDelta = deltaSum / scope;
+
+        return averageDelta / avg;
     }
 
     private static void calcAverage(){
