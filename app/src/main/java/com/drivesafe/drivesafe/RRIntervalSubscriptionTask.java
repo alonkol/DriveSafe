@@ -12,6 +12,7 @@ import com.microsoft.band.UserConsent;
 import com.microsoft.band.sensors.BandRRIntervalEvent;
 import com.microsoft.band.sensors.BandRRIntervalEventListener;
 import com.microsoft.band.sensors.HeartRateConsentListener;
+import com.drivesafe.drivesafe.Auxiliary.*;
 
 class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
 
@@ -94,12 +95,12 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
             if (event != null) {
                 IntervalHistory.add(event.getInterval());
 
-                if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Low){
+                if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Low){
                     mainActivity.restartPictureTakerRate(1);
                     SoundManager.Alert(mainActivity.getApplicationContext());
                 }
 
-                else if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Medium){
+                else if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Medium){
                     mainActivity.restartPictureTakerRate(1);
                 }
             }

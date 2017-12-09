@@ -25,6 +25,8 @@
     import com.microsoft.projectoxford.face.rest.ClientException;
     import com.microsoft.projectoxford.face.rest.WebServiceRequest;
 
+    import com.drivesafe.drivesafe.Auxiliary.*;
+
     public class PhotoHandler implements PictureCallback  {
 
         private final String sub_key = "f828f841dd4642249e6c9fcd69784bed";
@@ -87,12 +89,12 @@
                         Log.i(this.occlusionTag, "Found Occclusion: " + Double.toString(averageOcclusion));
 
                         OcclusionHistory.add(averageOcclusion);
-                        if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Low){
+                        if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Low){
                             mainActivity.restartPictureTakerRate(1);
                             SoundManager.Alert(context);
                         }
 
-                        if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Medium){
+                        if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Medium){
                             mainActivity.restartPictureTakerRate(1);
                         }
 

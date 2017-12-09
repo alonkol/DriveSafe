@@ -24,6 +24,7 @@ public class PictureTaker extends TimerTask {
             setCameraIfNeeded();
             SurfaceTexture st = new SurfaceTexture(0);
             camera.setPreviewTexture(st);
+            camera.stopPreview();
             camera.startPreview();
             camera.takePicture( null, null, MainActivity.pictureCallback);
         }catch (IOException e) {

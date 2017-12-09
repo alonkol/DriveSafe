@@ -1,29 +1,27 @@
 package com.drivesafe.drivesafe;
 
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
+
+import com.drivesafe.drivesafe.Auxiliary.*;
 
 class IntervalHistory {
 
-    private static Queue<Double> history = new LinkedList<>();
+    private static List<Double> history = new LinkedList<>();
 
     private static double variance;
 
     private static final double highVarianceThreshold = 0.3;
     private static final double mediumVarianceThreshold = 0.1;
 
-    private static final long minHistory = 10;
-    private static final long maxHistory = 300;
-
-    enum AlertnessLevel{
-        Low, Medium, High
-    }
+    private static final int minHistory = 10;
+    private static final int maxHistory = 300;
 
     static void add(double interval){
         history.add(interval);
 
-        if (history.size() >= maxHistory){
-            history.remove();
+        if (history.size() == maxHistory){
+            history.remove(history.size() - 1);
         }
 
         calcVariance();
