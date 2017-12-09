@@ -1,5 +1,6 @@
 package com.drivesafe.drivesafe;
 
+import android.bluetooth.BluetoothAdapter;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -76,6 +77,16 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
     }
 
     private boolean getConnectedBandClient() throws InterruptedException, BandException {
+        // check if bluetooth turned on
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            return false;
+        } else {
+            if (!mBluetoothAdapter.isEnabled()) {
+                // TODO: Bluetooth is not enable
+            }
+        }
+
         if (client == null) {
             BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
             if (devices.length == 0) {
