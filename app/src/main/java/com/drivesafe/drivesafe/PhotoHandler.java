@@ -89,8 +89,7 @@
                         OcclusionHistory.add(averageOcclusion);
                         if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Low){
                             mainActivity.restartPictureTakerRate(1);
-                            // TODO: sounds alert
-
+                            SoundManager.Alert(context);
                         }
 
                         if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Medium){

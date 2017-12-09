@@ -19,7 +19,7 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
     private static final String TAG = "RRInterval";
     private MainActivity mainActivity;
 
-    // bandx
+    // band
     private BandClient client = null;
 
     public RRIntervalSubscriptionTask(MainActivity mainActivity) {
@@ -63,9 +63,12 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
                     exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
                     break;
             }
+            // TODO: handle exception
             Log.e(this.TAG, exceptionMessage);
 
         } catch (Exception e) {
+
+            // TODO: handle exception
             e.printStackTrace();
         }
         return null;
@@ -92,8 +95,8 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
                 IntervalHistory.add(event.getInterval());
 
                 if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Low){
-                    // TODO: alert
                     mainActivity.restartPictureTakerRate(1);
+                    SoundManager.Alert(mainActivity.getApplicationContext());
                 }
 
                 else if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Medium){
