@@ -2,6 +2,8 @@ package com.drivesafe.drivesafe;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.TimerTask;
 
@@ -23,9 +25,11 @@ public class PictureTaker extends TimerTask {
         try{
             setCameraIfNeeded();
             SurfaceTexture st = new SurfaceTexture(0);
+            camera.stopPreview();
             camera.setPreviewTexture(st);
             camera.stopPreview();
             camera.startPreview();
+            Log.i("hjhj", "shdjsdkjskjsk");
             camera.takePicture( null, null, MainActivity.pictureCallback);
         }catch (IOException e) {
             e.printStackTrace();

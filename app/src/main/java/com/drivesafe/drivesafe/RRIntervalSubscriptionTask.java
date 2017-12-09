@@ -92,8 +92,20 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
     private BandRRIntervalEventListener mRRIntervalEventListener = new BandRRIntervalEventListener() {
         @Override
         public void onBandRRIntervalChanged(final BandRRIntervalEvent event) {
-            if (event != null) {
-                IntervalHistory.add(event.getInterval());
+            try{
+                if (event != null) {
+                    //notify listener that band was detected
+                    if (mainActivity.initBandDetectionListener != null)
+                        mainActivity.initBandDetectionListener.onBandDetection();
+
+                    //check if we can start now
+                    //TODO: change 2 for an enum
+                    if (mainActivity.bandIsReady && mainActivity.faceIsReady) {
+                        if (mainActivity.initDetectionCompletion != null) {
+                            mainActivity.initDetectionCompletion.onCompletion();
+                        }
+                    }
+                    IntervalHistory.add(event.getInterval());
 
                 if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Low){
                     mainActivity.pictureTakingTimer.setHighRate();
@@ -104,6 +116,11 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
                     mainActivity.pictureTakingTimer.setHighRate();
                 }
             }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
         }
     };
 }

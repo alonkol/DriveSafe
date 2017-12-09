@@ -87,6 +87,17 @@
 
                         double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks);
                         Log.i(this.occlusionTag, String.format("Found Occclusion: %f", averageOcclusion));
+                        //notify listener that face was detected
+                        if (mainActivity.initFaceDetectionListener != null)
+                            mainActivity.initFaceDetectionListener.onFaceDetection();
+
+                        //check if we can start now
+                        //TODO: change 2 for an enum
+                        if (mainActivity.bandIsReady && mainActivity.faceIsReady) {
+                            if (mainActivity.initDetectionCompletion != null) {
+                                mainActivity.initDetectionCompletion.onCompletion();
+                            }
+                        }
 
                         OcclusionHistory.add(averageOcclusion);
                         if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Low){

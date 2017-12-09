@@ -17,14 +17,38 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:id="@+id/imageView1"
-        android:layout_above="@+id/button1" />
+        android:layout_above="@+id/face_rec" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Take Picture"
-        android:id="@+id/button1"
-        android:layout_alignParentBottom="true" />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/band_rec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="14dp"
+            android:text="Band is not recognized"
+            android:textColor="?attr/colorError"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/face_rec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/band_rec"
+            android:layout_alignStart="@+id/band_rec"
+            android:text="Face is not detected"
+            android:textColor="?attr/colorError"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/lets_go"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/band_rec"
+            android:layout_centerHorizontal="true"
+            android:text="Let's go!"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>
