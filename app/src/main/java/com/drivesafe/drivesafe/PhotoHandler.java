@@ -26,7 +26,7 @@
     public class PhotoHandler implements PictureCallback  {
 
         private final String sub_key = "f828f841dd4642249e6c9fcd69784bed";
-        private final String api_endpoint = "https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false";
+        private final String api_endpoint = "https://westeurope.api.cognitive.microsoft.com/face/v1.0";
         // copied from FaceServiceRestClient
         private final WebServiceRequest mRestCall = new WebServiceRequest(sub_key);
         private Gson mGson = (new GsonBuilder()).setDateFormat("M/d/yyyy h:m:s a").create();
