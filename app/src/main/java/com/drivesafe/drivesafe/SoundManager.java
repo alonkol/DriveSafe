@@ -19,7 +19,7 @@ public class SoundManager {
 
             if (mp != null){
                 if (mp.isPlaying()) {
-                    mp.stop();
+                    return;
                 }
                 mp.release();
             }
