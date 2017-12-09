@@ -22,6 +22,8 @@ import com.microsoft.band.BandException;
 import com.microsoft.band.BandInfo;
 import com.microsoft.band.ConnectionState;
 import com.microsoft.band.UserConsent;
+import com.microsoft.band.sensors.BandHeartRateEvent;
+import com.microsoft.band.sensors.BandHeartRateEventListener;
 import com.microsoft.band.sensors.HeartRateConsentListener;
 import com.microsoft.projectoxford.face.*;
 import com.microsoft.projectoxford.face.common.RequestMethod;
@@ -63,6 +65,15 @@ public class MainActivity extends AppCompatActivity {
         public void onBandRRIntervalChanged(final BandRRIntervalEvent event) {
             if (event != null) {
                 double interval = event.getInterval();
+            }
+        }
+    };
+
+    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
+        @Override
+        public void onBandHeartRateChanged(final BandHeartRateEvent event) {
+            if (event != null) {
+                int heartRate = event.getHeartRate();
             }
         }
     };
@@ -174,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (client.getSensorManager().getCurrentHeartRateConsent() == UserConsent.GRANTED) {
                             client.getSensorManager().registerRRIntervalEventListener(mRRIntervalEventListener);
+                            client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
                         } else {
                             client.getSensorManager().requestHeartRateConsent(that, new HeartRateConsentListener(){
 
