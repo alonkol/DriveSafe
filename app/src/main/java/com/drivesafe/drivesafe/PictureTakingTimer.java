@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.TimerTask;
 
 public class PictureTakingTimer extends Thread{
-    private static final int DEFAULT_RATE = 5;
+    private static final int DEFAULT_RATE = 3;
     private static final int HIGH_RATE = 1;
     private static final int MAX_IMAGES_ON_HIGH_RATE = 15;
     private static final String TAG = "picture taking timer";
