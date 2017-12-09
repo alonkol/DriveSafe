@@ -11,7 +11,7 @@ import java.util.Random;
 public class SoundManager {
 
     private static MediaPlayer mp;
-    private static final int[] sounds = new int[]{R.raw.wake_up, R.raw.siren};
+    private static final int[] sounds = new int[]{R.raw.wake_up, R.raw.siren, R.raw.shouts};
 
     static void Alert(Context appContext){
         try {
