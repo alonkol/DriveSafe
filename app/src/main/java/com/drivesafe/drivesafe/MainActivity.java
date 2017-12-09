@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         //Thread that takes picture every 3 seconds and starts 1.5 seconds after app init
         PictureTaker myTask = new PictureTaker();
         Timer myTimer = new Timer();
-        myTimer.schedule(myTask, 1500, 3000);
+        myTimer.schedule(myTask, 1500, 5000);
         detectionProgressDialog = new ProgressDialog(this);
         new RRIntervalSubscriptionTask(this).execute();
 
