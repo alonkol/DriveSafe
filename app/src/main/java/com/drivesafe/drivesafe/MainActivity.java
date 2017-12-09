@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import android.hardware.Camera;
+import com.drivesafe.drivesafe.Auxiliary.*;
+
 import java.util.Timer;
 
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public onDetectionCompletionEventListener initDetectionCompletion = null;
     public boolean faceIsReady = false;
     public boolean bandIsReady = false;
+    public Auxiliary.AppState STATE = AppState.Init;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
 
     @Override
@@ -64,12 +67,22 @@ public class MainActivity extends AppCompatActivity {
         this.setOnDetectionCompletionEventListener(new onDetectionCompletionEventListener() {
             @Override
             public void onCompletion() {
-                band_rec.setVisibility(View.GONE);
-                face_rec.setVisibility(View.GONE);
-                lets_go.setVisibility(View.VISIBLE);
+                if (STATE == AppState.Init)
+                {
+                    band_rec.setVisibility(View.GONE);
+                    face_rec.setVisibility(View.GONE);
+                    lets_go.setVisibility(View.VISIBLE);
+                    STATE = AppState.Active;
+                    lets_go.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            STATE = AppState.Active;
+                            lets_go.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                }
             }
         });
-
         requestPermissionsIfNeeded();
 
     }
@@ -112,14 +125,15 @@ public class MainActivity extends AppCompatActivity {
 
         this.initFrontCamera();
         // Start thread that takes picture every 5 seconds and starts 1.5 seconds after app init
-        startPictureTaker(5);
+        startPictureTaker();
         // Start thread that takes RR interval
         new RRIntervalSubscriptionTask(this).execute();
     }
 
-    private void startPictureTaker(int rate){
-        // rate in seconds
-        this.timerPictureTaker.schedule(this.pictureTakerTask, 1500, rate * 1000);
+    private void startPictureTaker(){
+        Log.i(this.TAG, "Starting Picture Taker");
+        this.pictureTakingTimer = new PictureTakingTimer(new PictureTaker());
+        this.pictureTakingTimer.start();
     }
 
     private void initFrontCamera(){
@@ -173,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
     public void setOnDetectionCompletionEventListener(onDetectionCompletionEventListener eventListener) {
         this.initDetectionCompletion = eventListener;
     }
-
 
 }
 

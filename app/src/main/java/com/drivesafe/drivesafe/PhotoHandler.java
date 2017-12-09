@@ -99,7 +99,9 @@
                             }
                         }
 
-                        OcclusionHistory.add(averageOcclusion);
+                        if (mainActivity.STATE == AppState.Active)
+                            OcclusionHistory.add(averageOcclusion);
+
                         if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Low){
                             mainActivity.pictureTakingTimer.setHighRate();
                             SoundManager.Alert(context);

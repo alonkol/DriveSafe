@@ -92,7 +92,7 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
     private BandRRIntervalEventListener mRRIntervalEventListener = new BandRRIntervalEventListener() {
         @Override
         public void onBandRRIntervalChanged(final BandRRIntervalEvent event) {
-            try{
+            try {
                 if (event != null) {
                     //notify listener that band was detected
                     if (mainActivity.initBandDetectionListener != null)
@@ -105,22 +105,21 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
                             mainActivity.initDetectionCompletion.onCompletion();
                         }
                     }
-                    IntervalHistory.add(event.getInterval());
+                    if (mainActivity.STATE == AppState.Active)
+                        IntervalHistory.add(event.getInterval());
 
-                if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Low){
-                    mainActivity.pictureTakingTimer.setHighRate();
-                    SoundManager.Alert(mainActivity.getApplicationContext());
-                }
-
-                else if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Medium){
-                    mainActivity.pictureTakingTimer.setHighRate();
+                    if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Low) {
+                        mainActivity.pictureTakingTimer.setHighRate();
+                        SoundManager.Alert(mainActivity.getApplicationContext());
+                    } else if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Medium) {
+                        mainActivity.pictureTakingTimer.setHighRate();
+                    }
                 }
             }
             catch (Exception e)
             {
                 e.printStackTrace();
             }
-
         }
     };
 }
