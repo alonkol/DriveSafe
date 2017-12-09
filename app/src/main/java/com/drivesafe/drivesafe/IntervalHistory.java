@@ -7,13 +7,13 @@ class IntervalHistory {
 
     private static Queue<Double> history = new LinkedList<>();
 
-    private static long count = 0;
-
     private static double variance;
 
     private static final double highVarianceThreshold = 0.3;
     private static final double mediumVarianceThreshold = 0.1;
 
+    private static final long minHistory = 10;
+    private static final long maxHistory = 300;
 
     enum AlertnessLevel{
         Low, Medium, High
@@ -21,25 +21,28 @@ class IntervalHistory {
 
     static void add(double interval){
         history.add(interval);
-        count++;
 
-        if (count < 10){
-            return;
+        if (history.size() >= maxHistory){
+            history.remove();
         }
 
         calcVariance();
     }
 
     static AlertnessLevel getAlertnessLevel(){
-        if (variance > highVarianceThreshold){
+        if (history.size() < minHistory){
             return AlertnessLevel.High;
+        }
+
+        if (variance > highVarianceThreshold){
+            return AlertnessLevel.Low;
         }
 
         if (variance > mediumVarianceThreshold){
             return AlertnessLevel.Medium;
         }
 
-        return AlertnessLevel.Low;
+        return AlertnessLevel.High;
     }
 
     private static void calcVariance(){
