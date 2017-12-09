@@ -89,7 +89,7 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
             if (event != null) {
                 IntervalHistory.add(event.getInterval());
 
-                if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.High){
+                if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Low){
                     // TODO: alert
                     // TODO: raise photo rate
                 }

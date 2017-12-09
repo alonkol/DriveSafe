@@ -31,18 +31,18 @@ class IntervalHistory {
 
     static AlertnessLevel getAlertnessLevel(){
         if (history.size() < minHistory){
-            return AlertnessLevel.Low;
+            return AlertnessLevel.High;
         }
 
         if (variance > highVarianceThreshold){
-            return AlertnessLevel.High;
+            return AlertnessLevel.Low;
         }
 
         if (variance > mediumVarianceThreshold){
             return AlertnessLevel.Medium;
         }
 
-        return AlertnessLevel.Low;
+        return AlertnessLevel.High;
     }
 
     private static void calcVariance(){
