@@ -11,7 +11,6 @@ import android.app.*;
 import android.util.Log;
 import android.widget.*;
 import android.hardware.Camera;
-import java.util.Timer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -22,8 +21,7 @@ public class MainActivity extends AppCompatActivity {
     public static Camera.PictureCallback pictureCallback;
     public Camera.CameraInfo cameraInfo;
     public Activity mainActivityReference = this;
-    private Timer timerPictureTaker;
-    private PictureTaker pictureTakerTask;
+    public PictureTakingTimer pictureTakingTimer;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
 
     @Override
@@ -70,24 +68,15 @@ public class MainActivity extends AppCompatActivity {
 
         this.initFrontCamera();
         // Start thread that takes picture every 5 seconds and starts 1.5 seconds after app init
-        startPictureTaker(5);
+        startPictureTaker();
         // Start thread that takes RR interval
         new RRIntervalSubscriptionTask(this).execute();
     }
 
-    private void startPictureTaker(int rate){
-        Log.i(this.TAG, "Setting picture taking rate to " + Integer.toString(rate));
-        this.timerPictureTaker = new Timer();
-        this.pictureTakerTask = new PictureTaker();
-        this.timerPictureTaker.schedule(this.pictureTakerTask, 1000, rate * 1000);
-    }
-
-    public void restartPictureTakerRate(int rate){
-        if (this.timerPictureTaker != null){
-            this.timerPictureTaker.cancel();
-        }
-        // rate in seconds
-        startPictureTaker(rate);
+    private void startPictureTaker(){
+        Log.i(this.TAG, "Starting Picture Taker");
+        this.pictureTakingTimer = new PictureTakingTimer(new PictureTaker());
+        this.pictureTakingTimer.start();
     }
 
     private void initFrontCamera(){

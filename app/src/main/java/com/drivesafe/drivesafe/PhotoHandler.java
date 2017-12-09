@@ -86,16 +86,16 @@
                         }
 
                         double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks);
-                        Log.i(this.occlusionTag, "Found Occclusion: " + Double.toString(averageOcclusion));
+                        Log.i(this.occlusionTag, String.format("Found Occclusion: %f", averageOcclusion));
 
                         OcclusionHistory.add(averageOcclusion);
-                        if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Low){
-                            mainActivity.restartPictureTakerRate(1);
+                        if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Low){
+                            mainActivity.pictureTakingTimer.setHighRate();
                             SoundManager.Alert(context);
                         }
 
-                        if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Medium){
-                            mainActivity.restartPictureTakerRate(1);
+                        if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Medium){
+                            mainActivity.pictureTakingTimer.setHighRate();
                         }
 
                     } catch (Exception e) {

@@ -95,13 +95,13 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
             if (event != null) {
                 IntervalHistory.add(event.getInterval());
 
-                if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Low){
-                    mainActivity.restartPictureTakerRate(1);
+                if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Low){
+                    mainActivity.pictureTakingTimer.setHighRate();
                     SoundManager.Alert(mainActivity.getApplicationContext());
                 }
 
-                else if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Medium){
-                    mainActivity.restartPictureTakerRate(1);
+                else if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Medium){
+                    mainActivity.pictureTakingTimer.setHighRate();
                 }
             }
         }
