@@ -1,14 +1,8 @@
     package com.drivesafe.drivesafe;
 
-    import java.io.ByteArrayInputStream;
     import java.io.ByteArrayOutputStream;
-    import java.io.File;
-    import java.io.FileOutputStream;
     import java.io.IOException;
-    import java.io.InputStream;
     import java.lang.reflect.Type;
-    import java.text.SimpleDateFormat;
-    import java.util.Date;
     import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
@@ -16,9 +10,7 @@
     import android.content.Context;
     import android.graphics.Bitmap;
     import android.graphics.BitmapFactory;
-    import android.graphics.Canvas;
-    import android.graphics.Color;
-    import android.graphics.Paint;
+    import android.graphics.Matrix;
     import android.hardware.Camera;
     import android.hardware.Camera.PictureCallback;
     import android.os.AsyncTask;
@@ -27,9 +19,6 @@
     import com.google.gson.GsonBuilder;
     import com.google.gson.reflect.TypeToken;
     import com.microsoft.projectoxford.face.common.RequestMethod;
-    import com.microsoft.projectoxford.face.contract.Face;
-    import com.microsoft.projectoxford.face.contract.FaceRectangle;
-    import com.microsoft.projectoxford.face.*;
     import com.microsoft.projectoxford.face.contract.*;
     import com.microsoft.projectoxford.face.rest.ClientException;
     import com.microsoft.projectoxford.face.rest.WebServiceRequest;
@@ -51,8 +40,16 @@
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            bitmap = RotateBitmap(bitmap, 270);
             MainActivity.imageView.setImageBitmap(bitmap);
             detectAndFrame(bitmap);
+        }
+
+        public static Bitmap RotateBitmap(Bitmap source, float angle)
+        {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(angle);
+            return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
         }
 
         private void detectAndFrame(final Bitmap imageBitmap)
