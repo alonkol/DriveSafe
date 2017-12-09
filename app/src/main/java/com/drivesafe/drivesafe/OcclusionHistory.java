@@ -1,5 +1,7 @@
 package com.drivesafe.drivesafe;
 
+import android.util.Log;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,8 +14,8 @@ class OcclusionHistory {
     private static double avg;
 
     private static final int numberOfLatestIndexesToFocus = 3;
-    private static final double highDeltaPercentThreshold = 0.4;
-    private static final double mediumDeltaPercentThreshold = 0.2;
+    private static final double highDeltaPercentThreshold = 0.3;
+    private static final double mediumDeltaPercentThreshold = 0.15;
     private static final int minHistory = 5;
     private static final int maxHistory = 200;
 
@@ -33,12 +35,18 @@ class OcclusionHistory {
         }
 
         double averageDelta = getAverageDeltaOfLatestData(numberOfLatestIndexesToFocus);
+        Log.i("Average occlusion delta", Double.toString(averageDelta));
 
         if (averageDelta > highDeltaPercentThreshold){
             return AlertnessLevel.Low;
         }
 
         if (averageDelta > mediumDeltaPercentThreshold){
+            return AlertnessLevel.Medium;
+        }
+
+        double latestDelta = getAverageDeltaOfLatestData(1);
+        if (latestDelta > highDeltaPercentThreshold){
             return AlertnessLevel.Medium;
         }
 
