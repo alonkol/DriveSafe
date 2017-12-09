@@ -9,19 +9,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.app.*;
 import android.util.Log;
+import android.view.View;
 import android.widget.*;
 import android.hardware.Camera;
+import java.util.Timer;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main Activity";
     public static ImageView imageView;
+    public static TextView band_rec;
+    public static TextView face_rec;
+    public static Button lets_go;
     public static Camera camera;
     public static Camera.PictureCallback pictureCallback;
     public Camera.CameraInfo cameraInfo;
     public Activity mainActivityReference = this;
     public PictureTakingTimer pictureTakingTimer;
+    public onFaceDetectionListener initFaceDetectionListener = null;
+    public onBandDetectionListener initBandDetectionListener = null;
+    public onDetectionCompletionEventListener initDetectionCompletion = null;
+    public boolean faceIsReady = false;
+    public boolean bandIsReady = false;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
 
     @Override
@@ -29,6 +39,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.imageView = (ImageView)findViewById(R.id.imageView1);
+        this.setOnFaceDetectionEventListener(new onFaceDetectionListener() {
+            @Override
+            public void onFaceDetection() {
+                if (!faceIsReady) {
+                    face_rec.setText("Face Detected :) ");
+                    face_rec.setTextColor(0xff99cc00);
+                    faceIsReady=true;
+                }
+            }
+        });
+
+        this.setOnBandDetectionEventListener(new onBandDetectionListener() {
+            @Override
+            public void onBandDetection() {
+                if (!bandIsReady) {
+                    band_rec.setText("Band is recognized! ");
+                    band_rec.setTextColor(0xff99cc00);
+                    bandIsReady=true;
+                }
+            }
+        });
+
+        this.setOnDetectionCompletionEventListener(new onDetectionCompletionEventListener() {
+            @Override
+            public void onCompletion() {
+                band_rec.setVisibility(View.GONE);
+                face_rec.setVisibility(View.GONE);
+                lets_go.setVisibility(View.VISIBLE);
+            }
+        });
+
         requestPermissionsIfNeeded();
 
     }
@@ -56,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     // permissions were granted, start the app logic
                     initAppLogic();
                 } else {
-                    Log.e(this.TAG, "Permissions were not granted!");
+                    Log.d(this.TAG, "Permissions were not granted!");
                     finish();
                 }
             }
@@ -65,18 +106,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void initAppLogic(){
         this.pictureCallback = new PhotoHandler(getApplicationContext(), this);
+        this.band_rec = (TextView) findViewById(R.id.band_rec);
+        this.face_rec = (TextView) findViewById(R.id.face_rec);
+        this.lets_go = (Button) findViewById(R.id.lets_go);
 
         this.initFrontCamera();
         // Start thread that takes picture every 5 seconds and starts 1.5 seconds after app init
-        startPictureTaker();
+        startPictureTaker(5);
         // Start thread that takes RR interval
         new RRIntervalSubscriptionTask(this).execute();
     }
 
-    private void startPictureTaker(){
-        Log.i(this.TAG, "Starting Picture Taker");
-        this.pictureTakingTimer = new PictureTakingTimer(new PictureTaker());
-        this.pictureTakingTimer.start();
+    private void startPictureTaker(int rate){
+        // rate in seconds
+        this.timerPictureTaker.schedule(this.pictureTakerTask, 1500, rate * 1000);
     }
 
     private void initFrontCamera(){
@@ -103,5 +146,34 @@ public class MainActivity extends AppCompatActivity {
         }
         return cameraId;
     }
+
+    //Listener to detect when Face is detected
+    public interface onFaceDetectionListener {
+        public void onFaceDetection();
+    }
+
+    public void setOnFaceDetectionEventListener(onFaceDetectionListener eventListener) {
+        this.initFaceDetectionListener = eventListener;
+    }
+
+    //Listener to detect when Band is recognized
+    public interface onBandDetectionListener {
+        public void onBandDetection();
+    }
+
+    public void setOnBandDetectionEventListener(onBandDetectionListener eventListener) {
+        this.initBandDetectionListener = eventListener;
+    }
+
+    //Listener to detect both face and band are good and we are ready to start
+    public interface onDetectionCompletionEventListener {
+        public void onCompletion();
+    }
+
+    public void setOnDetectionCompletionEventListener(onDetectionCompletionEventListener eventListener) {
+        this.initDetectionCompletion = eventListener;
+    }
+
+
 }
 
