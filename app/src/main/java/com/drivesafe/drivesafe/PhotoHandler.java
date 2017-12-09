@@ -99,9 +99,10 @@
                             }
                         }
 
-                        if (mainActivity.STATE == AppState.Active)
+                        if (mainActivity.STATE == AppState.Active) {
+                            Log.i("PhotoHandler", "Adding occlusion to history");
                             OcclusionHistory.add(averageOcclusion);
-
+                        }
                         if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Low){
                             mainActivity.pictureTakingTimer.setHighRate();
                             SoundManager.Alert(context);

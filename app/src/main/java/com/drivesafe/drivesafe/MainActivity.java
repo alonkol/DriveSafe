@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     public static TextView band_rec;
     public static TextView face_rec;
     public static Button lets_go;
+    public static Button dbg_btn;
     public static Camera camera;
     public static Camera.PictureCallback pictureCallback;
     public Camera.CameraInfo cameraInfo;
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
                     band_rec.setVisibility(View.GONE);
                     face_rec.setVisibility(View.GONE);
                     lets_go.setVisibility(View.VISIBLE);
-                    STATE = AppState.Active;
                     lets_go.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -122,6 +122,13 @@ public class MainActivity extends AppCompatActivity {
         this.band_rec = (TextView) findViewById(R.id.band_rec);
         this.face_rec = (TextView) findViewById(R.id.face_rec);
         this.lets_go = (Button) findViewById(R.id.lets_go);
+        this.dbg_btn = (Button)  findViewById(R.id.debug_btn);
+        dbg_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                STATE = AppState.Active;
+            }
+        });
 
         this.initFrontCamera();
         // Start thread that takes picture every 5 seconds and starts 1.5 seconds after app init
