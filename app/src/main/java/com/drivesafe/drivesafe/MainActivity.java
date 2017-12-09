@@ -1,16 +1,18 @@
 package com.drivesafe.drivesafe;
 
+import android.content.pm.PackageManager;
+import android.graphics.SurfaceTexture;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import java.io.*;
 import android.app.*;
-import android.content.*;
-import android.net.*;
-import android.os.*;
 import android.view.*;
-import android.graphics.*;
 import android.widget.*;
+import android.hardware.Camera;
+
+import java.io.IOException;
+import java.util.Timer;
 import android.provider.*;
 
 import com.google.gson.Gson;
@@ -22,8 +24,6 @@ import com.microsoft.band.BandException;
 import com.microsoft.band.BandInfo;
 import com.microsoft.band.ConnectionState;
 import com.microsoft.band.UserConsent;
-import com.microsoft.band.sensors.BandHeartRateEvent;
-import com.microsoft.band.sensors.BandHeartRateEventListener;
 import com.microsoft.band.sensors.HeartRateConsentListener;
 import com.microsoft.projectoxford.face.*;
 import com.microsoft.projectoxford.face.common.RequestMethod;
@@ -46,19 +46,17 @@ import com.microsoft.band.sensors.BandRRIntervalEvent;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int PICK_IMAGE = 1;
-    private ProgressDialog detectionProgressDialog;
-    private final String sub_key = "f828f841dd4642249e6c9fcd69784bed";
-    private final String api_endpoint = "https://westeurope.api.cognitive.microsoft.com/face/v1.0";
+    public static ProgressDialog detectionProgressDialog;
+    public static ImageView imageView;
+    public static Camera camera;
+    public static Camera.PictureCallback pictureCallback;
+    public Camera.CameraInfo cameraInfo;
 
-    // copied from FaceServiceRestClient
-    private final WebServiceRequest mRestCall = new WebServiceRequest(sub_key);
-    private Gson mGson = (new GsonBuilder()).setDateFormat("M/d/yyyy h:m:s a").create();
 
     // band
     private BandClient client = null;
 
-    public Activity that = this;
+    public Activity mainActivityReference = this;
 
     private BandRRIntervalEventListener mRRIntervalEventListener = new BandRRIntervalEventListener() {
         @Override
@@ -69,110 +67,66 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
-        @Override
-        public void onBandHeartRateChanged(final BandHeartRateEvent event) {
-            if (event != null) {
-                int heartRate = event.getHeartRate();
-            }
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.imageView = (ImageView)findViewById(R.id.imageView1);
         Button button1 = (Button)findViewById(R.id.button1);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gallIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                gallIntent.setType("image/*");
-                startActivityForResult(Intent.createChooser(gallIntent, "Select Picture"), PICK_IMAGE);
+                take_picture();
             }
 
         });
+        this.detectionProgressDialog = new ProgressDialog(this);
+        this.pictureCallback = new PhotoHandler(getApplicationContext());
+        this.initFrontCamera();
+
+        //Thread that takes picture every 3 seconds and starts 1.5 seconds after app init
+        PictureTaker myTask = new PictureTaker();
+        Timer myTimer = new Timer();
+        myTimer.schedule(myTask, 1500, 3000);
         detectionProgressDialog = new ProgressDialog(this);
         new RRIntervalSubscriptionTask().execute();
 
     }
+    private void take_picture() {
+        try{
+        SurfaceTexture st = new SurfaceTexture(MODE_PRIVATE);
+            camera.setPreviewTexture(st);
+            camera.startPreview();
+            camera.takePicture( null , null, this.pictureCallback) ;
+            }catch (IOException e){
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri uri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                ImageView imageView = (ImageView) findViewById(R.id.imageView1);
-                imageView.setImageBitmap(bitmap);
-                detectAndFrame(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                }
+                }
+                private void initFrontCamera(){
+                if (getPackageManager()
+            .hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+                camera = Camera.open(this.findFrontFacingCamera());
+            //camera.setDisplayOrientation(getCorrectCameraOrientation(cameraInfo, camera));
+            //camera.getParameters().setRotation(getCorrectCameraOrientation(cameraInfo, camera));
+        }else {
+            finish(); // no Camera on device
         }
     }
 
-    // Detect faces by uploading face images
-    // Frame faces after detection
-
-    private void detectAndFrame(final Bitmap imageBitmap)
-    {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-
-        DetectionTask().execute(outputStream);
-    }
-
-    public AsyncTask<ByteArrayOutputStream, String, Face[]> DetectionTask(){
-        return new AsyncTask<ByteArrayOutputStream, String, Face[]>() {
-            @Override
-            protected Face[] doInBackground(ByteArrayOutputStream... params) {
-                Face[] result = new Face[]{};
-                try {
-                    result = myDetect(
-                            params[0], // image stream
-                            true,         // returnFaceId
-                            true,        // returnFaceLandmarks
-                            "age,occlusion"           // returnFaceAttributes: a string like "age, gender"
-                    );
-                    if (result == null)
-                    {
-                        // TODO
-                    }
-                    FaceLandmarks landmarks = result[0].faceLandmarks;
-                    // TODO: change to sqrt(dx^2 + dy^2). Currently vertical only
-                    // TODO: why is eyeLeftBottom higher than eyeLeftTop???
-                    double occlusionLeft = landmarks.eyeLeftTop.y - landmarks.eyeLeftBottom.y;
-                    double occlusionRight = landmarks.eyeRightTop.y - landmarks.eyeRightBottom.y;
-                    double averageOcclusion = (occlusionLeft + occlusionRight) / 2;
-
-                } catch (Exception e) {
-                    // TODO
-                }
-
-                return result;
+    private int findFrontFacingCamera() {
+int cameraId = -1;
+        // Search for the front facing camera
+        int numberOfCameras = Camera.getNumberOfCameras();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                cameraId = i;
+                cameraInfo = info;
+                break;
             }
-        };
-    }
-
-    public Face[] myDetect(ByteArrayOutputStream byteArrayOutputStream, boolean returnFaceId, boolean returnFaceLandmarks, String returnFaceAttributes) throws ClientException, IOException {
-        Map<String, Object> params = new HashMap();
-        params.put("returnFaceId", Boolean.valueOf(returnFaceId));
-        params.put("returnFaceLandmarks", Boolean.valueOf(returnFaceLandmarks));
-        params.put("returnFaceAttributes", returnFaceAttributes);
-
-        String path = String.format("%s/%s", new Object[]{this.api_endpoint, "detect"});
-        String uri = WebServiceRequest.getUrl(path, params);
-
-        byte[] data = byteArrayOutputStream.toByteArray();
-        params.clear();
-        params.put("data", data);
-        String json = (String)this.mRestCall.request(uri, RequestMethod.POST, params, "application/octet-stream");
-        Type listType = (new TypeToken<List<Face>>() {
-        }).getType();
-        List<Face> faces = (List)this.mGson.fromJson(json, listType);
-        return faces.toArray(new Face[faces.size()]);
+        }
+        return cameraId;
     }
 
     private class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
@@ -183,21 +137,17 @@ public class MainActivity extends AppCompatActivity {
                     int hardwareVersion = Integer.parseInt(client.getHardwareVersion().await());
                     if (hardwareVersion >= 20) {
 
-                        if (client.getSensorManager().getCurrentHeartRateConsent() == UserConsent.GRANTED) {
-                            client.getSensorManager().registerRRIntervalEventListener(mRRIntervalEventListener);
-                            client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
-                        } else {
-                            client.getSensorManager().requestHeartRateConsent(that, new HeartRateConsentListener(){
+                        if (client.getSensorManager().getCurrentHeartRateConsent() != UserConsent.GRANTED) {
+                            client.getSensorManager().requestHeartRateConsent(mainActivityReference, new HeartRateConsentListener(){
 
                                 @Override
                                 public void userAccepted(boolean b) {
 
                                 }
                             });
-
-                            // appendToUI("You have not given this application consent to access heart rate data yet."
-                            //        + " Please press the Heart Rate Consent button.\n");
                         }
+
+                        client.getSensorManager().registerRRIntervalEventListener(mRRIntervalEventListener);
                     } else {
                         // appendToUI("The RR Interval sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
                     }
@@ -217,11 +167,10 @@ public class MainActivity extends AppCompatActivity {
                         exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
                         break;
                 }
-                // appendToUI(exceptionMessage);
+                // TODO: do something with exception?
 
             } catch (Exception e) {
-                Exception e2 = e;
-                // appendToUI(e.getMessage());
+                // TODO: do something with exception?
             }
             return null;
         }
