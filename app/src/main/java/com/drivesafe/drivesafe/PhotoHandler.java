@@ -83,7 +83,17 @@
 
                         double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks);
                         Log.i(this.occlusionTag, "Found Occclusion: " + Double.toString(averageOcclusion));
-                        // TODO: On consistent low occlusion, sound alert
+
+                        OcclusionHistory.add(averageOcclusion);
+                        if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Low){
+                            // TODO: Increase photo rate
+                            // TODO: sounds alert
+
+                        }
+
+                        if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Medium){
+                            // TODO: increase photo rate
+                        }
 
                     } catch (Exception e) {
                         Log.i(this.occlusionTag,"Failed");
