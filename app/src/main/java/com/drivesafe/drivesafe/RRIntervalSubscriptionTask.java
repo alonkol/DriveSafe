@@ -12,15 +12,12 @@ import com.microsoft.band.sensors.BandRRIntervalEvent;
 import com.microsoft.band.sensors.BandRRIntervalEventListener;
 import com.microsoft.band.sensors.HeartRateConsentListener;
 
-/**
- * Created by YossiElman on 12/9/17.
- */
 class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
 
 
     private MainActivity mainActivity;
 
-    // band
+    // bandx
     private BandClient client = null;
 
     public RRIntervalSubscriptionTask(MainActivity mainActivity) {
@@ -90,7 +87,17 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
         @Override
         public void onBandRRIntervalChanged(final BandRRIntervalEvent event) {
             if (event != null) {
-                double interval = event.getInterval();
+                IntervalHistory.add(event.getInterval());
+
+                if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.High){
+                    // TODO: alert
+                    // TODO: raise photo rate
+                }
+
+                if (IntervalHistory.getAlertnessLevel() == IntervalHistory.AlertnessLevel.Medium){
+                    // TODO: raise photo rate
+                }
+
             }
         }
     };
