@@ -18,6 +18,3 @@ It uses image recognition with 'Azure' Face Api and microsoft band and alerts th
 * **Alon Kollmann**
 * **Noam Mansur**
 * **Yossi Elman**
-
-
-## Yossi's first branch
