@@ -89,12 +89,12 @@
                         Log.i(this.occlusionTag, String.format("Found Occclusion: %f", averageOcclusion));
 
                         OcclusionHistory.add(averageOcclusion);
-                        if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Low){
+                        if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Low){
                             mainActivity.pictureTakingTimer.setHighRate();
                             SoundManager.Alert(context);
                         }
 
-                        if (OcclusionHistory.getAlertnessLevel() == OcclusionHistory.AlertnessLevel.Medium){
+                        if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Medium){
                             mainActivity.pictureTakingTimer.setHighRate();
                         }
 
