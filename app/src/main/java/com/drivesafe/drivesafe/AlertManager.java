@@ -28,7 +28,7 @@ public class AlertManager {
     private static ByteArrayOutputStream currentImageOutputStream;
     private final WebServiceRequest mRestCall = new WebServiceRequest(sub_key);
     private Gson mGson = (new GsonBuilder()).setDateFormat("M/d/yyyy h:m:s a").create();
-    private static final String api_endpoint = "https://prod-24.westeurope.logic.azure.com:443/workflows/41d3890ebfd54071814359c127c30e6e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l3DLw-VHNmvDc_owqCG_yxK8rOY0iyzVne93fuuyaA4";
+    private static final String api_endpoint = "https://prod-24.westeurope.logic.azure.com:443/workflows/41d3890ebfd54071814359c127c30e6e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BJ8QijHIX_mMxQiORHOcpODmLngNJ8S90P7qqjKQICQ";
 
 
     public AlertManager(MainActivity mainActivity) {
@@ -117,6 +117,7 @@ public class AlertManager {
                     Log.i(this.TAG,"Trying to upload image");
                     uploadToOD(params[0]);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     Log.i(this.TAG,"Failed Uploading Image");
                 }
                 Log.i(this.TAG,"Image uploaded successfully");
@@ -131,8 +132,14 @@ public class AlertManager {
         params.put("image", byteArrayOutputStream.toByteArray());
 
         String uri = WebServiceRequest.getUrl(api_endpoint, params);
+        Log.i(this.TAG,String.format("URL = %s", uri));
 
-        String json = (String)this.mRestCall.request(uri, RequestMethod.POST, params, "application/json");
+        try{
+            String json = (String)this.mRestCall.request(uri, RequestMethod.POST, params, "application/json");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(this.TAG, "Failed to send JSON");
+        }
         // String res = this.mGson.fromJson(json, List<String>);
         return "YES!!!";
     }

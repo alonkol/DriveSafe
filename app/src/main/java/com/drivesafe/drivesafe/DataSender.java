@@ -6,13 +6,14 @@ import com.microsoft.applicationinsights.library.TelemetryClient;
 
 public class DataSender {
 
-    private static TelemetryClient telemetry = TelemetryClient.getInstance();
+    private static TelemetryClient telemetry;
     private static String TAG = "DataSender";
 
     public DataSender(MainActivity activity) {
         ApplicationInsights.setup(activity.getApplicationContext(), activity.getApplication());
         ApplicationInsights.start();
         ApplicationInsights.setDeveloperMode(true);
+        this.telemetry = TelemetryClient.getInstance();;
     }
 
     public static void ReportOnAlert() {
