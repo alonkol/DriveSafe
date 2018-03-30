@@ -127,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 STATE = AppState.Active;
+                dbg_btn.setVisibility(View.INVISIBLE);
+
             }
         });
 
