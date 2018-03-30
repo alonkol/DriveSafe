@@ -62,13 +62,13 @@
         {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-
+            mainActivity.alertManager.setCurrentImage(outputStream);
             DetectionTask().execute(outputStream);
         }
 
         public AsyncTask<ByteArrayOutputStream, String, Face[]> DetectionTask(){
             return new AsyncTask<ByteArrayOutputStream, String, Face[]>() {
-                public String occlusionTag = "OcclusionDetector";
+                public String TAG = "PhotoHandler";
 
                 @Override
                 protected Face[] doInBackground(ByteArrayOutputStream... params) {
@@ -86,7 +86,7 @@
                         }
 
                         double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks, result[0].faceRectangle);
-                        Log.i(this.occlusionTag, String.format("Found Occclusion: %f", averageOcclusion));
+                        Log.i(TAG, String.format("Found Occclusion: %f", averageOcclusion));
                         //notify listener that face was detected
                         if (mainActivity.initFaceDetectionListener != null)
                             mainActivity.initFaceDetectionListener.onFaceDetection();
@@ -100,12 +100,12 @@
                         }
 
                         if (mainActivity.STATE == AppState.Active) {
-                            Log.i("PhotoHandler", "Adding occlusion to history");
+                            Log.i(TAG, "Adding occlusion to history");
                             OcclusionHistory.add(averageOcclusion, mainActivity.alertManager);
                         }
 
                     } catch (Exception e) {
-                        Log.i(this.occlusionTag,"Failed");
+                        Log.i(TAG,"Failed at detecting face in image");
                         mainActivity.initFaceDetectionListener.onFaceNotDetected();
                     }
 
