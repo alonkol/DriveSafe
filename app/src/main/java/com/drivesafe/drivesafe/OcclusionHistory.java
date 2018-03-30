@@ -23,7 +23,7 @@ class OcclusionHistory {
         history.add(occlusion);
 
         if (history.size() == maxHistory){
-            history.remove(history.size() - 1);
+            history.remove(0);
         }
 
         calcAverage();

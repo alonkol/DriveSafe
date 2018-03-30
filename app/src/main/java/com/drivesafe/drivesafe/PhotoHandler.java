@@ -85,7 +85,7 @@
                             // TODO
                         }
 
-                        double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks);
+                        double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks, result[0].faceRectangle);
                         Log.i(this.occlusionTag, String.format("Found Occclusion: %f", averageOcclusion));
                         //notify listener that face was detected
                         if (mainActivity.initFaceDetectionListener != null)
@@ -122,10 +122,12 @@
             };
         }
 
-        public double getAverageOcclusion(FaceLandmarks landmarks){
+        public double getAverageOcclusion(FaceLandmarks landmarks, FaceRectangle rectangle){
+
             double occlusionLeft = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
             double occlusionRight = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
-            return (occlusionLeft + occlusionRight) / 2;
+            double avg_occ = (occlusionLeft + occlusionRight) / 2;
+            return avg_occ / rectangle.height;
         }
 
         public double getDistance(FeatureCoordinate feat1, FeatureCoordinate feat2){
