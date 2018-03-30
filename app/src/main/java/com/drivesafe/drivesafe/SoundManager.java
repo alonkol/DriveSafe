@@ -10,7 +10,6 @@ public class SoundManager {
 
     private static final String TAG = "Sound Manager";
     private static MediaPlayer mp;
-    private static boolean inCoolDown = false;
     private static final int[] sounds = new int[]{R.raw.siren, R.raw.shouts};
 
     static void Alert(Context appContext){
@@ -18,19 +17,16 @@ public class SoundManager {
             int soundIndex = new Random().nextInt(sounds.length);
 
             if (mp != null){
-                if (inCoolDown || mp.isPlaying()) {
+                Log.d(TAG, "Alert sound requested but mp is playing");
+                if (mp.isPlaying()) {
                     return;
                 }
                 mp.release();
             }
 
             mp = MediaPlayer.create(appContext, sounds[soundIndex]);
-            inCoolDown = true;
-            Log.d(TAG, "In cool down");
+            Log.d(TAG, "Sounding alert");
             mp.start();
-            turnOffCoolDown();
-
-
 
         } catch (Exception e) {
             // TODO: ignore?
@@ -38,16 +34,4 @@ public class SoundManager {
         }
     }
 
-    private static void turnOffCoolDown(){
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        inCoolDown = false;
-                        Log.d(TAG, "Finished cool down");
-                    }
-                },
-                15000
-        );
-    }
 }

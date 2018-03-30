@@ -101,15 +101,7 @@
 
                         if (mainActivity.STATE == AppState.Active) {
                             Log.i("PhotoHandler", "Adding occlusion to history");
-                            OcclusionHistory.add(averageOcclusion);
-                        }
-                        if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Low){
-                            mainActivity.pictureTakingTimer.setHighRate();
-                            SoundManager.Alert(context);
-                        }
-
-                        if (OcclusionHistory.getAlertnessLevel() == AlertnessLevel.Medium){
-                            mainActivity.pictureTakingTimer.setHighRate();
+                            OcclusionHistory.add(averageOcclusion, mainActivity.alertManager);
                         }
 
                     } catch (Exception e) {

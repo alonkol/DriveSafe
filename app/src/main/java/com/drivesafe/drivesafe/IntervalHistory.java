@@ -17,7 +17,7 @@ class IntervalHistory {
     private static final int minHistory = 10;
     private static final int maxHistory = 300;
 
-    static void add(double interval){
+    static void add(double interval, AlertManager alertManager){
         history.add(interval);
 
         if (history.size() == maxHistory){
@@ -25,22 +25,26 @@ class IntervalHistory {
         }
 
         calcVariance();
+        setAlertnessLevel(alertManager);
     }
 
-    static AlertnessLevel getAlertnessLevel(){
+    static void setAlertnessLevel(AlertManager alertManager){
         if (history.size() < minHistory){
-            return AlertnessLevel.High;
+            alertManager.setBandAlertness(AlertnessLevel.High);
+            return;
         }
 
         if (variance > highVarianceThreshold){
-            return AlertnessLevel.Low;
+            alertManager.setBandAlertness(AlertnessLevel.Low);
+            return;
         }
 
         if (variance > mediumVarianceThreshold){
-            return AlertnessLevel.Medium;
+            alertManager.setBandAlertness(AlertnessLevel.Medium);
+            return;
         }
 
-        return AlertnessLevel.High;
+        alertManager.setBandAlertness(AlertnessLevel.High);
     }
 
     private static void calcVariance(){

@@ -118,15 +118,9 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
                     }
                     if (mainActivity.STATE == AppState.Active) {
                         Log.i(TAG, "Adding RR interval to history");
-                        IntervalHistory.add(event.getInterval());
+                        IntervalHistory.add(event.getInterval(), mainActivity.alertManager);
                     }
 
-                    if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Low) {
-                        mainActivity.pictureTakingTimer.setHighRate();
-                        SoundManager.Alert(mainActivity.getApplicationContext());
-                    } else if (IntervalHistory.getAlertnessLevel() == AlertnessLevel.Medium) {
-                        mainActivity.pictureTakingTimer.setHighRate();
-                    }
                 }
             }
             catch (Exception e)

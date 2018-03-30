@@ -19,7 +19,7 @@ class OcclusionHistory {
     private static final int minHistory = 5;
     private static final int maxHistory = 200;
 
-    static void add(double occlusion){
+    static void add(double occlusion, AlertManager alertManager){
         history.add(occlusion);
 
         if (history.size() == maxHistory){
@@ -27,30 +27,35 @@ class OcclusionHistory {
         }
 
         calcAverage();
+        setPictureAlertness(alertManager);
     }
 
-    static AlertnessLevel getAlertnessLevel(){
+    static void setPictureAlertness(AlertManager alertManager){
         if (history.size() < minHistory){
-            return AlertnessLevel.High;
+            alertManager.setPictureAlertness(AlertnessLevel.High);
+            return;
         }
 
         double averageDelta = getAverageDeltaOfLatestData(numberOfLatestIndexesToFocus);
         Log.i("Average occlusion delta", Double.toString(averageDelta));
 
         if (averageDelta > highDeltaPercentThreshold){
-            return AlertnessLevel.Low;
+            alertManager.setPictureAlertness(AlertnessLevel.Low);
+            return;
         }
 
         if (averageDelta > mediumDeltaPercentThreshold){
-            return AlertnessLevel.Medium;
+            alertManager.setPictureAlertness(AlertnessLevel.Medium);
+            return;
         }
 
         double latestDelta = getAverageDeltaOfLatestData(1);
         if (latestDelta > highDeltaPercentThreshold){
-            return AlertnessLevel.Medium;
+            alertManager.setPictureAlertness(AlertnessLevel.Medium);
+            return;
         }
 
-        return AlertnessLevel.High;
+        alertManager.setPictureAlertness(AlertnessLevel.High);
     }
 
     private static double getAverageDeltaOfLatestData(int scope){

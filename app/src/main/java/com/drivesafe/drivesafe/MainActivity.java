@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public static Camera.PictureCallback pictureCallback;
     public Camera.CameraInfo cameraInfo;
     public Activity mainActivityReference = this;
+    public AlertManager alertManager;
     public PictureTakingTimer pictureTakingTimer;
     public onFaceDetectionListener initFaceDetectionListener = null;
     public onBandDetectionListener initBandDetectionListener = null;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.imageView = (ImageView)findViewById(R.id.imageView1);
+        this.alertManager = new  AlertManager(this);
         this.setOnFaceDetectionEventListener(new onFaceDetectionListener() {
             @Override
             public void onFaceDetection() {
