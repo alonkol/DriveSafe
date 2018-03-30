@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.*;
 import android.hardware.Camera;
 import com.drivesafe.drivesafe.Auxiliary.*;
+import com.microsoft.applicationinsights.library.ApplicationInsights;
 
 import java.util.Timer;
 
@@ -96,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         requestPermissionsIfNeeded();
+        ApplicationInsights.setup(this.getApplicationContext(), this.getApplication());
+        ApplicationInsights.start();
 
     }
 

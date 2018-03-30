@@ -25,6 +25,7 @@ class OcclusionHistory {
         if (history.size() == maxHistory){
             history.remove(0);
         }
+        DataSender.SendData("Occlusion", occlusion);
 
         calcAverage();
         setPictureAlertness(alertManager);
@@ -67,8 +68,7 @@ class OcclusionHistory {
 
         double averageDelta = deltaSum / scope;
 
-        return averageDelta / avg;
-    }
+        return averageDelta / avg;}
 
     private static void calcAverage(){
         double sum = 0.0;

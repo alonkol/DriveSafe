@@ -24,6 +24,7 @@ class IntervalHistory {
             history.remove(history.size() - 1);
         }
 
+        DataSender.SendData("RRInterval", interval);
         calcVariance();
         setAlertnessLevel(alertManager);
     }
