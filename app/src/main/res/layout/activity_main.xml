@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/band_rec"
             android:layout_alignStart="@+id/band_rec"
-            android:text="Face is not detected"
+            android:text="Face not detected"
             android:textColor="?attr/colorError"
             android:textSize="18sp" />
 

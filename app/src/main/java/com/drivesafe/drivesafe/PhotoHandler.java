@@ -114,6 +114,7 @@
 
                     } catch (Exception e) {
                         Log.i(this.occlusionTag,"Failed");
+                        mainActivity.initFaceDetectionListener.onFaceNotDetected();
                     }
 
                     return result;

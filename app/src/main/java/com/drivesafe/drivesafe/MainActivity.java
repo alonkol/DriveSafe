@@ -3,6 +3,7 @@ package com.drivesafe.drivesafe;
 import android.Manifest;
 import android.content.pm.PackageManager;
 
+import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -47,9 +48,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFaceDetection() {
                 if (!faceIsReady) {
-                    face_rec.setText("Face Detected :) ");
-                    face_rec.setTextColor(0xff99cc00);
+                    face_rec.setText(R.string.face_detected);
+                    face_rec.setTextColor(Color.GREEN);
                     faceIsReady=true;
+                }
+            }
+
+            @Override
+            public void onFaceNotDetected() {
+                if (STATE == AppState.Init) {
+                    face_rec.setText(R.string.face_not_detected);
+                    face_rec.setTextColor(Color.RED);
+                    faceIsReady=false;
                 }
             }
         });
@@ -126,8 +136,11 @@ public class MainActivity extends AppCompatActivity {
         dbg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                STATE = AppState.Active;
-                dbg_btn.setVisibility(View.INVISIBLE);
+                if (faceIsReady) {
+                    STATE = AppState.Active;
+                    dbg_btn.setVisibility(View.INVISIBLE);
+                    Log.d(TAG, "No Band, Started App logic");
+                }
 
             }
         });
@@ -173,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
     //Listener to detect when Face is detected
     public interface onFaceDetectionListener {
         public void onFaceDetection();
+        public void onFaceNotDetected();
     }
 
     public void setOnFaceDetectionEventListener(onFaceDetectionListener eventListener) {
