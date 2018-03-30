@@ -14,9 +14,6 @@ import android.view.View;
 import android.widget.*;
 import android.hardware.Camera;
 import com.drivesafe.drivesafe.Auxiliary.*;
-import com.microsoft.applicationinsights.library.ApplicationInsights;
-
-import java.util.Timer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public Camera.CameraInfo cameraInfo;
     public Activity mainActivityReference = this;
     public AlertManager alertManager;
+    public DataSender dataSender;
     public PictureTakingTimer pictureTakingTimer;
     public onFaceDetectionListener initFaceDetectionListener = null;
     public onBandDetectionListener initBandDetectionListener = null;
@@ -47,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.imageView = (ImageView)findViewById(R.id.imageView1);
         this.alertManager = new  AlertManager(this);
+        this.dataSender = new DataSender(this);
         this.setOnFaceDetectionEventListener(new onFaceDetectionListener() {
             @Override
             public void onFaceDetection() {
@@ -97,8 +96,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         requestPermissionsIfNeeded();
-        ApplicationInsights.setup(this.getApplicationContext(), this.getApplication());
-        ApplicationInsights.start();
 
     }
 

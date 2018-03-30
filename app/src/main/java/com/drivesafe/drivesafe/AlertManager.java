@@ -54,6 +54,7 @@ public class AlertManager {
         uploadImageToDrive(currentImageOutputStream);
         Log.d(TAG, "Starting alert manager's cool down");
         turnOffCoolDown();
+        DataSender.ReportOnAlert();
     }
 
     private void uploadImageToDrive(ByteArrayOutputStream currentImageOutputStream) {
