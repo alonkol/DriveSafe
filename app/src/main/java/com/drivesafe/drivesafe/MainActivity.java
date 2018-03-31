@@ -21,11 +21,10 @@ import okhttp3.OkHttpClient;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main Activity";
-    public static ImageView imageView;
+    public static ImageView mainImage;
     public static TextView band_rec;
     public static TextView face_rec;
     public static Button start_btn;
-    public static View driving_screen;
     public static Camera camera;
     public static Camera.PictureCallback pictureCallback;
     public Camera.CameraInfo cameraInfo;
@@ -46,12 +45,18 @@ public class MainActivity extends AppCompatActivity {
     private final int HIGH_RISK_THRESHOLD = 1/12;
     OkHttpClient client = null;
 
+    public static View driving_screen;
+    private static ImageView driving_image;
+    private static TextView driving_text;
+    private static TextView driving_score;
+    public onAlertnessScoreUpdateListener alertnessScoreUpdateListener = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.imageView = (ImageView)findViewById(R.id.imageView1);
+        this.mainImage = (ImageView)findViewById(R.id.main_image);
         this.alertManager = new  AlertManager(this);
         this.dataSender = new DataSender(this);
         // this.dataReciever = new DataReciever(this);
@@ -97,6 +102,29 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        this.setOnAlertnessScoreUpdateListener(new onAlertnessScoreUpdateListener() {
+            @Override
+            public void onScoreUpdate(double alertnessScore) {
+                if (STATE == AppState.Active)
+                {
+                    driving_score.setText(String.format("Alertness Score: %.1f", alertnessScore));
+                    if (alertnessScore > 6.5){
+                        driving_text.setText(R.string.driving_normal_title);
+                        driving_image.setImageResource(R.drawable.face_smile);
+                    }
+                    else if (alertnessScore > 3.5){
+                        driving_text.setText(R.string.driving_warning_title);
+                        driving_image.setImageResource(R.drawable.face_worried);
+                    }
+                    else{
+                        driving_text.setText(R.string.driving_alert_title);
+                        driving_image.setImageResource(R.drawable.face_fear);
+                    }
+                }
+            }
+        });
+
         requestPermissionsIfNeeded();
 //        if (dataReciever.getRiskScore() > HIGH_RISK_THRESHOLD){
 //            isHighRisk = true;
@@ -140,6 +168,9 @@ public class MainActivity extends AppCompatActivity {
         this.face_rec = (TextView) findViewById(R.id.face_rec);
         this.start_btn = (Button)  findViewById(R.id.start_btn);
         this.driving_screen = (View) findViewById(R.id.driving_screen);
+        this.driving_image = (ImageView) findViewById(R.id.driving_image);;
+        this.driving_text = (TextView) findViewById(R.id.driving_text);;
+        this.driving_score = (TextView) findViewById(R.id.driving_score);;
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,6 +241,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void setOnBandDetectionEventListener(onBandDetectionListener eventListener) {
         this.initBandDetectionListener = eventListener;
+    }
+
+    //Listener to change driving view components
+    public interface onAlertnessScoreUpdateListener {
+        public void onScoreUpdate(double score);
+    }
+
+    public void setOnAlertnessScoreUpdateListener(onAlertnessScoreUpdateListener eventListener) {
+        this.alertnessScoreUpdateListener = eventListener;
     }
 
     //Listener to detect both face and band are good and we are ready to start

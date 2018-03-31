@@ -12,12 +12,14 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/driving_image"
             android:layout_width="@dimen/img_width_height"
             android:layout_height="@dimen/img_width_height"
             android:layout_marginBottom="@dimen/img_vertical_margin"
             android:src="@drawable/face_smile" />
 
         <TextView
+            android:id="@+id/driving_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/driving_normal_title"
@@ -26,6 +28,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/driving_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"

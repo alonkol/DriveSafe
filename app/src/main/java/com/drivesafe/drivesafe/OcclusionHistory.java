@@ -14,10 +14,11 @@ class OcclusionHistory {
     private static double avg;
 
     private static final int numberOfLatestIndexesToFocus = 3;
-    private static final double highDeltaPercentThreshold = 0.3;
-    private static final double mediumDeltaPercentThreshold = 0.15;
+    public static final double highRiskScoreThreshold = 3;
+    public static final double mediumRiskScoreThreshold = 6;
     private static final int minHistory = 5;
     private static final int maxHistory = 200;
+    public static final double latestRatio = 0.2;
 
     static void add(double occlusion, AlertManager alertManager){
         history.add(occlusion);
@@ -33,33 +34,17 @@ class OcclusionHistory {
 
     static void setPictureAlertness(AlertManager alertManager){
         if (history.size() < minHistory){
-            alertManager.setPictureAlertness(AlertnessLevel.High, 0);
+            alertManager.setPictureAlertness((10.0 + mediumRiskScoreThreshold) / 2);
             return;
         }
 
         double averageDelta = getAverageDeltaOfLatestData(numberOfLatestIndexesToFocus);
         Log.i("Average occlusion delta", Double.toString(averageDelta));
-
-        if (averageDelta > highDeltaPercentThreshold){
-            alertManager.setPictureAlertness(AlertnessLevel.Low,
-                    averageDelta - highDeltaPercentThreshold);
-            return;
-        }
-
-        if (averageDelta > mediumDeltaPercentThreshold){
-            alertManager.setPictureAlertness(AlertnessLevel.Medium,
-                    averageDelta - mediumDeltaPercentThreshold);
-            return;
-        }
-
         double latestDelta = getAverageDeltaOfLatestData(1);
-        if (latestDelta > highDeltaPercentThreshold){
-            alertManager.setPictureAlertness(AlertnessLevel.Medium,
-                    latestDelta - highDeltaPercentThreshold);
-            return;
-        }
-
-        alertManager.setPictureAlertness(AlertnessLevel.High, averageDelta);
+        Log.i("Latest occlusion delta", Double.toString(latestDelta));
+        double totalScore = ((1.0 - latestRatio) * averageDelta + latestRatio * latestDelta) * 10;
+        totalScore = Math.max(Math.min(10 - totalScore, 10) ,0);
+        alertManager.setPictureAlertness(totalScore);
     }
 
     private static double getAverageDeltaOfLatestData(int scope){
@@ -71,7 +56,8 @@ class OcclusionHistory {
 
         double averageDelta = deltaSum / scope;
 
-        return averageDelta / avg;}
+        return averageDelta / avg;
+    }
 
     private static void calcAverage(){
         double sum = 0.0;

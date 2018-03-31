@@ -19,12 +19,12 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/imageView1" />
+        android:id="@+id/main_image"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:layout_alignBottom="@+id/imageView1"
+            android:layout_alignBottom="@+id/main_image"
             android:background="@android:color/background_light"
             android:visibility="visible">
 
