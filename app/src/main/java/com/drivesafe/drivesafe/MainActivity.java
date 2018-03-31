@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         this.imageView = (ImageView)findViewById(R.id.imageView1);
         this.alertManager = new  AlertManager(this);
         this.dataSender = new DataSender(this);
-        this.dataReciever = new DataReciever(this);
+        // this.dataReciever = new DataReciever(this);
         this.client = new OkHttpClient();
         this.setOnFaceDetectionEventListener(new onFaceDetectionListener() {
             @Override
@@ -106,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         requestPermissionsIfNeeded();
-        if (dataReciever.getRiskScore() > HIGH_RISK_THRESHOLD){
-            isHighRisk = true;
-        }
+//        if (dataReciever.getRiskScore() > HIGH_RISK_THRESHOLD){
+//            isHighRisk = true;
+//        }
 
     }
 

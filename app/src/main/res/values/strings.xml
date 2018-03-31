@@ -2,4 +2,23 @@
     <string name="app_name">DriveSafe</string>
     <string name="face_detected">Face Detected :) </string>
     <string name="face_not_detected">Face not detected</string>
+
+    <!-- Intro Slider strings -->
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">Welcome to DriveSafe!</string>
+    <string name="slide_1_desc">We are here to make sure you get home safely.</string>
+
+    <string name="slide_2_title">Embrace Yourselves!</string>
+    <string name="slide_2_desc">Make sure to wear your Microsoft Band and that your selfie camera is pointed at your face.</string>
+
+    <string name="slide_3_title">Stay Alert!</string>
+    <string name="slide_3_desc">If you go sleepy, we will set off a surprising alert.</string>
+
+    <string name="slide_4_title">Hall Of Shame</string>
+    <string name="slide_4_desc">If you\'ll fail to stay alert - you\'ll find yourself in our Hall Of Shame!</string>
+
 </resources>

@@ -142,7 +142,7 @@ public class AlertManager {
         JSONObject requestObject = new JSONObject();
 
         try {
-            requestObject.put("name", String.format("img%d.bmp", DateFormat.getDateTimeInstance().format(new Date()));
+            requestObject.put("name", String.format("img%d.bmp", DateFormat.getDateTimeInstance().format(new Date())));
             requestObject.put("image", Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT));
         } catch (JSONException e) {
             e.printStackTrace();
