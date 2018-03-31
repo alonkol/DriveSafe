@@ -7,46 +7,62 @@
     tools:context="com.drivesafe.drivesafe.MainActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="5px"
-    android:paddingRight="5px"
-    android:paddingTop="5px"
-    android:paddingBottom="5px" tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="5px"
+        android:paddingRight="5px"
+        android:paddingTop="5px"
+        android:paddingBottom="5px"
+        tools:context=".MainActivity">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/imageView1"
-        android:layout_above="@+id/face_rec" />
+        android:id="@+id/imageView1" />
 
-        <TextView
-            android:id="@+id/band_rec"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="14dp"
-            android:text="Band is not recognized"
-            android:textColor="?attr/colorError"
-            android:textSize="18sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_alignBottom="@+id/imageView1"
+            android:background="@android:color/background_light"
+            android:visibility="visible">
 
-        <TextView
-            android:id="@+id/face_rec"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/band_rec"
-            android:layout_alignStart="@+id/band_rec"
-            android:text="Face not detected"
-            android:textColor="?attr/colorError"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/face_rec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/band_rec"
+                android:layout_alignEnd="@+id/band_rec"
+                android:layout_marginBottom="8dp"
+                android:text="Detecting Face..."
+                android:textColor="@android:color/darker_gray"
+                android:textSize="22sp" />
 
-        <Button
-            android:id="@+id/start_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/band_rec"
-            android:layout_toStartOf="@+id/band_rec"
-            android:text="START" />
+            <TextView
+                android:id="@+id/band_rec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/start_btn"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:text="Detecting Band..."
+                android:textColor="@android:color/darker_gray"
+                android:textSize="22sp" />
+
+            <Button
+                android:id="@+id/start_btn"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:background="@color/button_green"
+                android:text="Let's Go!"
+                android:textColor="@android:color/white"
+                android:textSize="22sp" />
+
+        </RelativeLayout>
 
         <include layout="@layout/driving_screen"
             android:id="@+id/driving_screen"

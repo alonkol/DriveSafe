@@ -40,4 +40,6 @@
         <item>@color/dot_dark_screen3</item>
         <item>@color/dot_dark_screen4</item>
     </array>
+
+    <color name="button_green">#82be73</color>
 </resources>
