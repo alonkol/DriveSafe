@@ -1,6 +1,7 @@
 package com.drivesafe.drivesafe;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.graphics.Color;
@@ -33,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
     public onFaceDetectionListener initFaceDetectionListener = null;
     public onBandDetectionListener initBandDetectionListener = null;
     public onDetectionCompletionEventListener initDetectionCompletion = null;
-    public boolean faceIsReady = false;
-    public boolean bandIsReady = false;
+    public static boolean faceIsReady = false;
+    public static boolean bandIsReady = false;
     public boolean isHighRisk = false;
     public Auxiliary.AppState STATE = AppState.Init;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
@@ -171,14 +172,10 @@ public class MainActivity extends AppCompatActivity {
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (faceIsReady) {
-                    STATE = AppState.Active;
-                    start_btn.setVisibility(View.INVISIBLE);
-                    if (!bandIsReady) {
-                        Log.d(TAG, "No Band, Starting App logic");
-                        alertManager.setBandDisabled();
-                    }
-                    driving_screen.setVisibility(View.VISIBLE);
+                start_btn.setVisibility(View.INVISIBLE);
+                if (isHighRisk)
+                {
+                    startActivity(new Intent(MainActivity.this, SpecialNoticeActivity.class));
                 }
             }
         });

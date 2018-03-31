@@ -66,7 +66,7 @@ public class AlertManager {
         UploadImageTask().execute(currentImageOutputStream);
     }
 
-    public void setBandDisabled(){
+    public static void setBandDisabled(){
         Log.d(TAG, "Band scoring disabled");
         bandDisabled = true;
     }
