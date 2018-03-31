@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFaceNotDetected() {
-                if (STATE == AppState.Init && faceIsReady) {
+                if (STATE == AppState.Init) {
                     face_rec.setText(R.string.face_detecting);
                     face_rec.setTextColor(Color.GRAY);
                     faceIsReady=false;
