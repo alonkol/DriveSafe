@@ -15,8 +15,6 @@ import android.widget.*;
 import android.hardware.Camera;
 import com.drivesafe.drivesafe.Auxiliary.*;
 
-import okhttp3.OkHttpClient;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
     public Activity mainActivityReference = this;
     public AlertManager alertManager;
     public DataSender dataSender;
-    public DataReciever dataReciever;
-
     public PictureTakingTimer pictureTakingTimer;
     public onFaceDetectionListener initFaceDetectionListener = null;
     public onBandDetectionListener initBandDetectionListener = null;
@@ -42,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean isHighRisk = false;
     public Auxiliary.AppState STATE = AppState.Init;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
-    private final int HIGH_RISK_THRESHOLD = 1/12;
-    OkHttpClient client = null;
 
     public static View driving_screen;
     private static ImageView driving_image;
@@ -59,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
         this.mainImage = (ImageView)findViewById(R.id.main_image);
         this.alertManager = new  AlertManager(this);
         this.dataSender = new DataSender(this);
-        // this.dataReciever = new DataReciever(this);
-        this.client = new OkHttpClient();
         this.setOnFaceDetectionEventListener(new onFaceDetectionListener() {
             @Override
             public void onFaceDetection() {
@@ -130,10 +122,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         requestPermissionsIfNeeded();
-//        if (dataReciever.getRiskScore() > HIGH_RISK_THRESHOLD){
-//            isHighRisk = true;
-//        }
-
     }
 
     private void requestPermissionsIfNeeded(){
@@ -167,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAppLogic(){
+        new DataRecieverTask((this)).execute();
         this.pictureCallback = new PhotoHandler(getApplicationContext(), this);
         this.band_rec = (TextView) findViewById(R.id.band_rec);
         this.face_rec = (TextView) findViewById(R.id.face_rec);

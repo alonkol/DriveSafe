@@ -35,6 +35,7 @@ public class AlertManager {
     public static final MediaType JSON = MediaType.parse("application/json");
     private static ByteArrayOutputStream currentImageOutputStream;
     private static final String api_endpoint = "https://prod-24.westeurope.logic.azure.com:443/workflows/41d3890ebfd54071814359c127c30e6e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BJ8QijHIX_mMxQiORHOcpODmLngNJ8S90P7qqjKQICQ";
+    OkHttpClient client = null;
 
     public AlertManager(MainActivity main_activity) {
         mainActivity = main_activity;
@@ -152,19 +153,15 @@ public class AlertManager {
 
         requestObject.put("name", String.format("img%s.jpg", DateFormat.getDateTimeInstance().format(new Date())));
         requestObject.put("image", Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT));
-
         RequestBody body = RequestBody.create( JSON, requestObject.toString());
         Request request = new Request.Builder()
                 .url(api_endpoint)
                 .post(body)
                 .build();
 
-        okhttp3.Response response = mainActivity.client.newCall(request).execute();
-        Log.i(this.TAG,String.format("Response status: %s", response.isSuccessful()));
-        if (!response.isSuccessful()){
-            throw new Exception("Response from app logic failed");
-        }
-
+        okhttp3.Response response = client.newCall(request).execute();
+        Log.i(this.TAG,response.body().string());
+        // String res = this.mGson.fromJson(json, List<String>);
         return "YES!!!";
     }
 }
