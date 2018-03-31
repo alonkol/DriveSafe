@@ -109,17 +109,20 @@ public class MainActivity extends AppCompatActivity {
                 if (STATE == AppState.Active)
                 {
                     driving_score.setText(String.format("Alertness Score: %.1f", alertnessScore));
-                    if (alertnessScore > 6.5){
+                    if (alertnessScore > 6.0){
                         driving_text.setText(R.string.driving_normal_title);
                         driving_image.setImageResource(R.drawable.face_smile);
+                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_normal));
                     }
-                    else if (alertnessScore > 3.5){
+                    else if (alertnessScore > 3.0){
                         driving_text.setText(R.string.driving_warning_title);
                         driving_image.setImageResource(R.drawable.face_worried);
+                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_warning));
                     }
                     else{
                         driving_text.setText(R.string.driving_alert_title);
                         driving_image.setImageResource(R.drawable.face_fear);
+                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_alert));
                     }
                 }
             }
@@ -168,9 +171,10 @@ public class MainActivity extends AppCompatActivity {
         this.face_rec = (TextView) findViewById(R.id.face_rec);
         this.start_btn = (Button)  findViewById(R.id.start_btn);
         this.driving_screen = (View) findViewById(R.id.driving_screen);
-        this.driving_image = (ImageView) findViewById(R.id.driving_image);;
-        this.driving_text = (TextView) findViewById(R.id.driving_text);;
-        this.driving_score = (TextView) findViewById(R.id.driving_score);;
+        this.driving_image = (ImageView) findViewById(R.id.driving_image);
+        this.driving_text = (TextView) findViewById(R.id.driving_text);
+        this.driving_score = (TextView) findViewById(R.id.driving_score);
+
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,6 +264,8 @@ public class MainActivity extends AppCompatActivity {
     public void setOnDetectionCompletionEventListener(onDetectionCompletionEventListener eventListener) {
         this.initDetectionCompletion = eventListener;
     }
+
+
 
 }
 

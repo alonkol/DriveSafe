@@ -11,8 +11,8 @@ class IntervalHistory {
 
     private static double variance;
 
-    public static final double highRiskScoreThreshold = 7;
-    public static final double mediumRiskScoreThreshold = 9;
+    private static final double highVarianceThreshold = 0.3;
+    private static final double mediumVarianceThreshold = 0.1;
 
     private static final int minHistory = 10;
     private static final int maxHistory = 300;
@@ -21,7 +21,7 @@ class IntervalHistory {
         history.add(interval);
 
         if (history.size() == maxHistory){
-            history.remove(0);
+            history.remove(history.size() - 1);
         }
 
         DataSender.SendData("RRInterval", interval);
@@ -31,12 +31,12 @@ class IntervalHistory {
 
     static void setAlertnessLevel(AlertManager alertManager){
         if (history.size() < minHistory){
-            alertManager.setBandAlertness((10.0 + mediumRiskScoreThreshold) / 2);
+            alertManager.setBandAlertness(1.0);
             return;
         }
 
-        double totalScore =  Math.max(Math.min((1.0 - variance) * 10, 10) ,0);
-        alertManager.setBandAlertness(totalScore);
+        double score = 1.0 - (3 * variance);
+        alertManager.setBandAlertness(score);
     }
 
     private static void calcVariance(){

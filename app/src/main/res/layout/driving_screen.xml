@@ -5,7 +5,7 @@
     android:background="@color/driving_normal">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center_horizontal"
@@ -20,8 +20,9 @@
 
         <TextView
             android:id="@+id/driving_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:text="@string/driving_normal_title"
             android:textColor="@android:color/black"
             android:textSize="@dimen/slide_title"
@@ -29,7 +30,7 @@
 
         <TextView
             android:id="@+id/driving_score"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:paddingLeft="@dimen/desc_padding"

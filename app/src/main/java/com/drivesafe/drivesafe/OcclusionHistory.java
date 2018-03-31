@@ -14,11 +14,10 @@ class OcclusionHistory {
     private static double avg;
 
     private static final int numberOfLatestIndexesToFocus = 3;
-    public static final double highRiskScoreThreshold = 3;
-    public static final double mediumRiskScoreThreshold = 6;
+    private static final double highDeltaPercentThreshold = 0.3;
+    private static final double mediumDeltaPercentThreshold = 0.15;
     private static final int minHistory = 5;
     private static final int maxHistory = 200;
-    public static final double latestRatio = 0.2;
 
     static void add(double occlusion, AlertManager alertManager){
         history.add(occlusion);
@@ -34,19 +33,19 @@ class OcclusionHistory {
 
     static void setPictureAlertness(AlertManager alertManager){
         if (history.size() < minHistory){
-            alertManager.setPictureAlertness((10.0 + mediumRiskScoreThreshold) / 2);
+            alertManager.setPictureAlertness(1.0);
             return;
         }
 
         double averageDelta = getAverageDeltaOfLatestData(numberOfLatestIndexesToFocus);
-        Log.i("Average occlusion delta", Double.toString(averageDelta));
-        double latestDelta = getAverageDeltaOfLatestData(1);
-        Log.i("Latest occlusion delta", Double.toString(latestDelta));
-        double totalScore = ((1.0 - latestRatio) * averageDelta + latestRatio * latestDelta) * 10;
-        totalScore = Math.max(Math.min(10 - totalScore, 10) ,0);
-        alertManager.setPictureAlertness(totalScore);
+
+        double score = 1.0 - (2 * averageDelta);
+        Log.i("Occlusion score", Double.toString(score));
+
+        alertManager.setPictureAlertness(score);
     }
 
+    // returns ratio, number between 0 to 1.0
     private static double getAverageDeltaOfLatestData(int scope){
         double deltaSum = 0.0;
 
