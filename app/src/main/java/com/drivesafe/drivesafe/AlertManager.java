@@ -28,6 +28,10 @@ public class AlertManager {
     private static Context context;
     private static boolean inCoolDown = false;
 
+    private static double mediumRiskThreshold = 0.7;
+    public static double mediumRiskScore = 7.0;
+    public static double highRiskScore = 4.0;
+
     public static final MediaType JSON = MediaType.parse("application/json");
     private static ByteArrayOutputStream currentImageOutputStream;
     private static final String api_endpoint = "https://prod-24.westeurope.logic.azure.com:443/workflows/41d3890ebfd54071814359c127c30e6e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BJ8QijHIX_mMxQiORHOcpODmLngNJ8S90P7qqjKQICQ";
@@ -70,7 +74,7 @@ public class AlertManager {
 
 
     public void setPictureRate(){
-        if (bandAlertnessScore < 0.6 || pictureAlertnessScore < 0.6){
+        if (bandAlertnessScore < mediumRiskThreshold || pictureAlertnessScore < mediumRiskThreshold){
             mainActivity.pictureTakingTimer.setHighRate();
         }
     }
@@ -92,7 +96,7 @@ public class AlertManager {
     public void checkIfToAlert(){
         double alertnessLevel = getTotalAlertnessScore();
         // Most likely will happen when One indicator is in Low state or both in Medium
-        if (alertnessLevel < 3.0){
+        if (alertnessLevel < highRiskScore){
             Alert(context);
         }
     }

@@ -109,20 +109,21 @@ public class MainActivity extends AppCompatActivity {
                 if (STATE == AppState.Active)
                 {
                     driving_score.setText(String.format("Alertness Score: %.1f", alertnessScore));
-                    if (alertnessScore > 6.0){
-                        driving_text.setText(R.string.driving_normal_title);
-                        driving_image.setImageResource(R.drawable.face_smile);
-                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_normal));
+                    if (alertnessScore < AlertManager.highRiskScore){
+                        driving_text.setText(R.string.driving_alert_title);
+                        driving_image.setImageResource(R.drawable.face_fear);
+                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_alert));
                     }
-                    else if (alertnessScore > 3.0){
+                    else if (alertnessScore < AlertManager.mediumRiskScore){
                         driving_text.setText(R.string.driving_warning_title);
                         driving_image.setImageResource(R.drawable.face_worried);
                         driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_warning));
                     }
                     else{
-                        driving_text.setText(R.string.driving_alert_title);
-                        driving_image.setImageResource(R.drawable.face_fear);
-                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_alert));
+                        driving_text.setText(R.string.driving_normal_title);
+                        driving_image.setImageResource(R.drawable.face_smile);
+                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_normal));
+
                     }
                 }
             }

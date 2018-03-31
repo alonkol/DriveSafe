@@ -14,8 +14,6 @@ class OcclusionHistory {
     private static double avg;
 
     private static final int numberOfLatestIndexesToFocus = 3;
-    private static final double highDeltaPercentThreshold = 0.3;
-    private static final double mediumDeltaPercentThreshold = 0.15;
     private static final int minHistory = 5;
     private static final int maxHistory = 200;
 
