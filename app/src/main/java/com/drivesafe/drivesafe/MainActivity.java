@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             STATE = AppState.Active;
                             lets_go.setVisibility(View.INVISIBLE);
+                            setContentView(R.layout.driving_screen);
                         }
                     });
                 }

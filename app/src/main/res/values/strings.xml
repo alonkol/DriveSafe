@@ -20,8 +20,17 @@
 
     <string name="slide_4_title">Hall Of Shame</string>
     <string name="slide_4_desc">If you\'ll fail to stay alert - you\'ll find yourself in our Hall Of Shame!</string>
+    <!-- Intro Slider END -->
 
     <string name="special_notice_title">Stay Alert!</string>
     <string name="special_notice_desc">Many of our users seem to be especially tired during the past hour.</string>
+
+    <string name="driving_normal_title">Good Job!</string>
+    <string name="driving_warning_title">Stay Alert!</string>
+    <string name="driving_alert_title">Wake Up!!!</string>
+
+    <string name="alertness_score">Alertness Score: 10.0</string>
+
+
 
 </resources>
