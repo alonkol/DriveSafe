@@ -102,6 +102,7 @@
 
                     } catch (Exception e) {
                         Log.i(TAG,"Failed at detecting face in image");
+                        e.printStackTrace();
                         mainActivity.initFaceDetectionListener.onFaceNotDetected();
                     }
 

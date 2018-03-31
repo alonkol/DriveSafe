@@ -40,7 +40,7 @@ public class SpecialNoticeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // when pressed page home screen will be launched
-                Auxiliary.AppState STATE = Auxiliary.AppState.Active;
+                 MainActivity.STATE = Auxiliary.AppState.Active;
                 if (!MainActivity.bandIsReady) {
                     AlertManager.setBandDisabled();
                 }

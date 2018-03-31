@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean faceIsReady = false;
     public static boolean bandIsReady = false;
     public boolean isHighRisk = false;
-    public Auxiliary.AppState STATE = AppState.Init;
+    public static Auxiliary.AppState STATE = AppState.Init;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
 
     public static View driving_screen;
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFaceDetection() {
                 if (!faceIsReady) {
+                    Log.d(TAG, "Face detected!");
                     face_rec.setText(R.string.face_detected);
                     face_rec.setTextColor(getResources().getColor(R.color.button_green));
                     start_btn.setBackgroundColor(getResources().getColor(R.color.button_green));
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFaceNotDetected() {
                 if (STATE == AppState.Init) {
+                    Log.d(TAG, "Face not detected");
                     face_rec.setText(R.string.face_detecting);
                     face_rec.setTextColor(Color.LTGRAY);
                     start_btn.setBackgroundColor(getResources().getColor(R.color.button_disabled));
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAppLogic(){
-        new DataRecieverTask((this)).execute();
+        new DataReceiverTask((this)).execute();
         this.pictureCallback = new PhotoHandler(getApplicationContext(), this);
         this.band_rec = (TextView) findViewById(R.id.band_rec);
         this.face_rec = (TextView) findViewById(R.id.face_rec);
@@ -172,8 +174,8 @@ public class MainActivity extends AppCompatActivity {
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start_btn.setVisibility(View.INVISIBLE);
                 if (faceIsReady) {
+                    start_btn.setVisibility(View.INVISIBLE);
                     if (isHighRisk) {
                         try {
                             startActivity(new Intent(MainActivity.this, SpecialNoticeActivity.class));
