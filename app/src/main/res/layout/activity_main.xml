@@ -23,7 +23,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="160dp"
             android:layout_alignBottom="@+id/imageView1"
             android:background="@android:color/background_light"
             android:visibility="visible">
@@ -37,7 +37,7 @@
                 android:layout_marginBottom="8dp"
                 android:text="Detecting Face..."
                 android:textColor="@android:color/darker_gray"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/band_rec"
@@ -48,18 +48,19 @@
                 android:layout_marginBottom="8dp"
                 android:text="Detecting Band..."
                 android:textColor="@android:color/darker_gray"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
 
             <Button
                 android:id="@+id/start_btn"
-                android:layout_width="250dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="8dp"
                 android:background="@color/button_green"
                 android:text="Let's Go!"
                 android:textColor="@android:color/white"
+                android:paddingBottom="18sp"
+                android:paddingTop="18sp"
                 android:textSize="22sp" />
 
         </RelativeLayout>
