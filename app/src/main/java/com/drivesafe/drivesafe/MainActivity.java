@@ -24,8 +24,7 @@ public class MainActivity extends AppCompatActivity {
     public static ImageView imageView;
     public static TextView band_rec;
     public static TextView face_rec;
-    public static Button lets_go;
-    public static Button dbg_btn;
+    public static Button start_btn;
     public static Camera camera;
     public static Camera.PictureCallback pictureCallback;
     public Camera.CameraInfo cameraInfo;
@@ -94,15 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 {
                     band_rec.setVisibility(View.GONE);
                     face_rec.setVisibility(View.GONE);
-                    lets_go.setVisibility(View.VISIBLE);
-                    lets_go.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            STATE = AppState.Active;
-                            lets_go.setVisibility(View.INVISIBLE);
-                            setContentView(R.layout.driving_screen);
-                        }
-                    });
                 }
             }
         });
@@ -147,16 +137,18 @@ public class MainActivity extends AppCompatActivity {
         this.pictureCallback = new PhotoHandler(getApplicationContext(), this);
         this.band_rec = (TextView) findViewById(R.id.band_rec);
         this.face_rec = (TextView) findViewById(R.id.face_rec);
-        this.lets_go = (Button) findViewById(R.id.lets_go);
-        this.dbg_btn = (Button)  findViewById(R.id.debug_btn);
-        dbg_btn.setOnClickListener(new View.OnClickListener() {
+        this.start_btn = (Button)  findViewById(R.id.start_btn);
+        start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (faceIsReady) {
                     STATE = AppState.Active;
-                    dbg_btn.setVisibility(View.INVISIBLE);
-                    Log.d(TAG, "No Band, Started App logic");
-                    alertManager.setBandDisabled();
+                    start_btn.setVisibility(View.INVISIBLE);
+                    if (!bandIsReady) {
+                        Log.d(TAG, "No Band, Starting App logic");
+                        alertManager.setBandDisabled();
+                    }
+                    setContentView(R.layout.driving_screen);
                 }
             }
         });

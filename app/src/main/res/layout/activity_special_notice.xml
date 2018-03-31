@@ -15,7 +15,7 @@
             android:layout_width="@dimen/img_width_height"
             android:layout_height="@dimen/img_width_height"
             android:layout_marginBottom="@dimen/img_vertical_margin"
-            android:src="@drawable/car-crash" />
+            android:src="@drawable/car_crash" />
 
         <TextView
             android:layout_width="wrap_content"

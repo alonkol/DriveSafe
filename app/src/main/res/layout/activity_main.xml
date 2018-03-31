@@ -41,21 +41,12 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/lets_go"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/band_rec"
-            android:layout_centerHorizontal="true"
-            android:text="Let's go!"
-            android:visibility="invisible" />
-
-        <Button
-            android:id="@+id/debug_btn"
+            android:id="@+id/start_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/band_rec"
             android:layout_toStartOf="@+id/band_rec"
-            android:text="START without band" />
+            android:text="START" />
 
     </RelativeLayout>
 
