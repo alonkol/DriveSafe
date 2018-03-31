@@ -173,9 +173,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 start_btn.setVisibility(View.INVISIBLE);
-                if (isHighRisk)
-                {
-                    startActivity(new Intent(MainActivity.this, SpecialNoticeActivity.class));
+                if (faceIsReady) {
+                    if (isHighRisk) {
+                        try {
+                            startActivity(new Intent(MainActivity.this, SpecialNoticeActivity.class));
+                        }catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         });

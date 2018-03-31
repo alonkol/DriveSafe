@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 public class SpecialNoticeActivity extends AppCompatActivity {
 
-    private Button btjOk;
+    private Button btnOk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +36,13 @@ public class SpecialNoticeActivity extends AppCompatActivity {
 
         // making notification bar transparent
         changeStatusBarColor();
-        btjOk.setOnClickListener(new View.OnClickListener() {
+        btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // when pressed page home screen will be launched
-                if (MainActivity.faceIsReady) {
-                    finish();
-                    Auxiliary.AppState STATE = Auxiliary.AppState.Active;
-                    if (!MainActivity.bandIsReady) {
-                        AlertManager.setBandDisabled();
-                    }
+                Auxiliary.AppState STATE = Auxiliary.AppState.Active;
+                if (!MainActivity.bandIsReady) {
+                    AlertManager.setBandDisabled();
                 }
                 launchHomeScreen();
             }
