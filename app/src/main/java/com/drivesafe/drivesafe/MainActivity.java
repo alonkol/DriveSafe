@@ -40,8 +40,10 @@ public class MainActivity extends AppCompatActivity {
     public onDetectionCompletionEventListener initDetectionCompletion = null;
     public boolean faceIsReady = false;
     public boolean bandIsReady = false;
+    public boolean isHighRisk = false;
     public Auxiliary.AppState STATE = AppState.Init;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
+    private final int HIGH_RISK_THRESHOLD = 1/12;
     OkHttpClient client = null;
 
 
@@ -104,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         requestPermissionsIfNeeded();
+        if (dataReciever.getRiskScore() > HIGH_RISK_THRESHOLD){
+            isHighRisk = true;
+        }
 
     }
 
