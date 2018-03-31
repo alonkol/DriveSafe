@@ -12,6 +12,7 @@ public class DataSender {
     public DataSender(MainActivity activity) {
         ApplicationInsights.setup(activity.getApplicationContext(), activity.getApplication());
         ApplicationInsights.start();
+        //TODO: remove line below at the end of development
         ApplicationInsights.setDeveloperMode(true);
         this.telemetry = TelemetryClient.getInstance();;
     }

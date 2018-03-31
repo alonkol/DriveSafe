@@ -15,6 +15,8 @@ import android.widget.*;
 import android.hardware.Camera;
 import com.drivesafe.drivesafe.Auxiliary.*;
 
+import okhttp3.OkHttpClient;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     public Activity mainActivityReference = this;
     public AlertManager alertManager;
     public DataSender dataSender;
+    public DataReciever dataReciever;
+
     public PictureTakingTimer pictureTakingTimer;
     public onFaceDetectionListener initFaceDetectionListener = null;
     public onBandDetectionListener initBandDetectionListener = null;
@@ -38,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean bandIsReady = false;
     public Auxiliary.AppState STATE = AppState.Init;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
+    OkHttpClient client = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         this.imageView = (ImageView)findViewById(R.id.imageView1);
         this.alertManager = new  AlertManager(this);
         this.dataSender = new DataSender(this);
+        this.dataReciever = new DataReciever(this);
+        this.client = new OkHttpClient();
         this.setOnFaceDetectionEventListener(new onFaceDetectionListener() {
             @Override
             public void onFaceDetection() {
@@ -71,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             public void onBandDetection() {
                 if (!bandIsReady) {
                     band_rec.setText("Band is recognized! ");
-                    band_rec.setTextColor(0xff99cc00);
+                    band_rec.setTextColor(Color.GREEN);
                     bandIsReady=true;
                 }
             }

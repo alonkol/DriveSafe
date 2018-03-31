@@ -3,6 +3,7 @@ package com.drivesafe.drivesafe;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -11,10 +12,21 @@ import com.microsoft.projectoxford.face.common.RequestMethod;
 import com.microsoft.projectoxford.face.rest.ClientException;
 import com.microsoft.projectoxford.face.rest.WebServiceRequest;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 public class AlertManager {
     private static final String TAG = "Alert Manager";
@@ -23,13 +35,12 @@ public class AlertManager {
     private MainActivity main_activity;
     private static Context context;
     private static boolean inCoolDown = false;
-
+    public static final MediaType JSON = MediaType.parse("application/json");
     private final String sub_key = "23cbada0-dd3e-4af3-87e1-6895d48acdd2";
     private static ByteArrayOutputStream currentImageOutputStream;
     private final WebServiceRequest mRestCall = new WebServiceRequest(sub_key);
     private Gson mGson = (new GsonBuilder()).setDateFormat("M/d/yyyy h:m:s a").create();
     private static final String api_endpoint = "https://prod-24.westeurope.logic.azure.com:443/workflows/41d3890ebfd54071814359c127c30e6e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BJ8QijHIX_mMxQiORHOcpODmLngNJ8S90P7qqjKQICQ";
-
 
     public AlertManager(MainActivity mainActivity) {
         main_activity = mainActivity;
@@ -50,7 +61,6 @@ public class AlertManager {
         inCoolDown = true;
         Log.d(TAG, "Alert request received, sounding alert");
         SoundManager.Alert(appContext);
-        DataSender.ReportOnAlert();
         uploadImageToDrive(currentImageOutputStream);
         Log.d(TAG, "Starting alert manager's cool down");
         turnOffCoolDown();
@@ -128,20 +138,24 @@ public class AlertManager {
 
     public String uploadToOD(ByteArrayOutputStream byteArrayOutputStream) throws ClientException, IOException {
         Map<String, Object> params = new HashMap();
-        params.put("name", "abcde.jpg");
-        params.put("image", byteArrayOutputStream.toByteArray());
+        URL url = new URL(api_endpoint);
+        JSONObject requestObject = new JSONObject();
 
-        String uri = WebServiceRequest.getUrl(api_endpoint, params);
-        Log.i(this.TAG,String.format("URL = %s", uri));
-
-        try{
-            String json = (String)this.mRestCall.request(uri, RequestMethod.POST, params, "application/json");
-        } catch (Exception e) {
+        try {
+            requestObject.put("name", String.format("img%d.bmp", DateFormat.getDateTimeInstance().format(new Date()));
+            requestObject.put("image", Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT));
+        } catch (JSONException e) {
             e.printStackTrace();
-            Log.i(this.TAG, "Failed to send JSON");
         }
+        RequestBody body = RequestBody.create( JSON, requestObject.toString());
+        Request request = new Request.Builder()
+                .url(api_endpoint)
+                .post(body)
+                .build();
+
+        okhttp3.Response response = main_activity.client.newCall(request).execute();
+        Log.i(this.TAG,response.body().string());
         // String res = this.mGson.fromJson(json, List<String>);
         return "YES!!!";
     }
-
 }
