@@ -20,8 +20,6 @@ import okhttp3.RequestBody;
 
 public class AlertManager {
     private static final String TAG = "Alert Manager";
-    private static Auxiliary.AlertnessLevel bandAlertnessLevel;
-    private static Auxiliary.AlertnessLevel pictureAlertnessLevel;
     private static double bandAlertnessScore;
     private static double pictureAlertnessScore;
     private static boolean bandDisabled = false;
@@ -42,9 +40,8 @@ public class AlertManager {
         mainActivity = main_activity;
         context = mainActivity.getApplicationContext();
         bandAlertnessScore = 1.0;
-        bandAlertnessLevel = Auxiliary.AlertnessLevel.High;
         pictureAlertnessScore = 1.0;
-        pictureAlertnessLevel = Auxiliary.AlertnessLevel.High;
+        client = new OkHttpClient();
     }
 
     public void setCurrentImage(ByteArrayOutputStream lastImageOutputStream) {
@@ -161,8 +158,11 @@ public class AlertManager {
                 .build();
 
         okhttp3.Response response = client.newCall(request).execute();
-        Log.i(this.TAG,response.body().string());
-        // String res = this.mGson.fromJson(json, List<String>);
+        Log.i(this.TAG,String.format("Response status: %s", response.isSuccessful()));
+        if (!response.isSuccessful()){
+            throw new Exception("Response from app logic failed");
+        }
+
         return "YES!!!";
     }
 }
