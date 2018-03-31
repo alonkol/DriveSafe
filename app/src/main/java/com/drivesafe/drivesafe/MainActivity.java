@@ -182,6 +182,15 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
+                    else
+                    {
+                        STATE = AppState.Active;
+                        if (!bandIsReady) {
+                            Log.d(TAG, "No Band, Starting App logic");
+                            alertManager.setBandDisabled();
+                        }
+                        driving_screen.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });

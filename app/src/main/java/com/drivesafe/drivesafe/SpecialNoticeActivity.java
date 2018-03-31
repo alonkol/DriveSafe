@@ -50,7 +50,6 @@ public class SpecialNoticeActivity extends AppCompatActivity {
     }
 
     private void launchHomeScreen() {
-        startActivity(new Intent(SpecialNoticeActivity.this, MainActivity.class));
         MainActivity.driving_screen.setVisibility(View.VISIBLE);
         finish();
     }

@@ -33,6 +33,11 @@
             android:label="@string/title_activity_welcome"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
+        <activity
+            android:name=".SpecialNoticeActivity"
+            android:label="@string/title_special_notice_activity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <meta-data
             android:name="com.microsoft.applicationinsights.instrumentationKey"
             android:value="8cef8825-cf14-4376-83bf-6ec12c7e7120" />
