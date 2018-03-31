@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
                 if (!faceIsReady) {
                     face_rec.setText(R.string.face_detected);
                     face_rec.setTextColor(getResources().getColor(R.color.button_green));
+                    start_btn.setBackgroundColor(getResources().getColor(R.color.button_green));
+                    start_btn.setTextColor(Color.WHITE);
                     faceIsReady=true;
                 }
             }
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 if (STATE == AppState.Init) {
                     face_rec.setText(R.string.face_detecting);
                     face_rec.setTextColor(Color.GRAY);
+                    start_btn.setBackgroundColor(getResources().getColor(R.color.button_disabled));
+                    start_btn.setTextColor(Color.GRAY);
                     faceIsReady=false;
                 }
             }

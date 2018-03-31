@@ -42,4 +42,5 @@
     </array>
 
     <color name="button_green">#82be73</color>
+    <color name="button_disabled">#cccccc</color>
 </resources>

@@ -10,15 +10,11 @@
     xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="5px"
-        android:paddingRight="5px"
-        android:paddingTop="5px"
-        android:paddingBottom="5px"
         tools:context=".MainActivity">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:id="@+id/main_image"/>
 
         <RelativeLayout
@@ -30,7 +26,8 @@
 
             <TextView
                 android:id="@+id/face_rec"
-                android:layout_width="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/band_rec"
                 android:layout_alignEnd="@+id/band_rec"
@@ -41,10 +38,10 @@
 
             <TextView
                 android:id="@+id/band_rec"
-                android:layout_width="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/start_btn"
-                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
                 android:text="@string/band_detecting"
                 android:textColor="@android:color/darker_gray"
@@ -56,9 +53,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:background="@color/button_green"
+                android:background="@color/button_disabled"
                 android:text="Let's Go!"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/darker_gray"
                 android:paddingBottom="18sp"
                 android:paddingTop="18sp"
                 android:textSize="22sp" />
