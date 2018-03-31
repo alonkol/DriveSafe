@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public static TextView band_rec;
     public static TextView face_rec;
     public static Button start_btn;
+    public static View driving_screen;
     public static Camera camera;
     public static Camera.PictureCallback pictureCallback;
     public Camera.CameraInfo cameraInfo;
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         this.band_rec = (TextView) findViewById(R.id.band_rec);
         this.face_rec = (TextView) findViewById(R.id.face_rec);
         this.start_btn = (Button)  findViewById(R.id.start_btn);
+        this.driving_screen = (View) findViewById(R.id.driving_screen);
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "No Band, Starting App logic");
                         alertManager.setBandDisabled();
                     }
-                    setContentView(R.layout.driving_screen);
+                    driving_screen.setVisibility(View.VISIBLE);
                 }
             }
         });

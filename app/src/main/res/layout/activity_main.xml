@@ -48,6 +48,10 @@
             android:layout_toStartOf="@+id/band_rec"
             android:text="START" />
 
+        <include layout="@layout/driving_screen"
+            android:id="@+id/driving_screen"
+            android:visibility="invisible" />
+
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>
