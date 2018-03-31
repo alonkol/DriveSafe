@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">DriveSafe</string>
-    <string name="face_detected">Face Detected :) </string>
-    <string name="face_not_detected">Face not detected</string>
 
     <!-- Intro Slider strings -->
     <string name="title_activity_welcome">Home Screen</string>
@@ -31,6 +29,9 @@
 
     <string name="alertness_score">Alertness Score: 8.0</string>
 
-
+    <string name="face_detecting">Detecting Face...</string>
+    <string name="band_detecting">Detecting Band..</string>
+    <string name="face_detected">Face Detected!</string>
+    <string name="band_detected">Band Detected!</string>
 
 </resources>

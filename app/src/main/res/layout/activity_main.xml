@@ -35,7 +35,7 @@
                 android:layout_above="@+id/band_rec"
                 android:layout_alignEnd="@+id/band_rec"
                 android:layout_marginBottom="8dp"
-                android:text="Detecting Face..."
+                android:text="@string/face_detecting"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="30sp" />
 
@@ -46,7 +46,7 @@
                 android:layout_above="@+id/start_btn"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
-                android:text="Detecting Band..."
+                android:text="@string/band_detecting"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="30sp" />
 

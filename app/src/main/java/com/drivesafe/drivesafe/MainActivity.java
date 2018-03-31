@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private static TextView driving_score;
     public onAlertnessScoreUpdateListener alertnessScoreUpdateListener = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFaceDetection() {
                 if (!faceIsReady) {
                     face_rec.setText(R.string.face_detected);
-                    face_rec.setTextColor(Color.GREEN);
+                    face_rec.setTextColor(getResources().getColor(R.color.button_green));
                     faceIsReady=true;
                 }
             }
@@ -66,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFaceNotDetected() {
                 if (STATE == AppState.Init && faceIsReady) {
-                    face_rec.setText(R.string.face_not_detected);
-                    face_rec.setTextColor(Color.RED);
+                    face_rec.setText(R.string.face_detecting);
+                    face_rec.setTextColor(Color.GRAY);
                     faceIsReady=false;
                 }
             }
@@ -77,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onBandDetection() {
                 if (!bandIsReady) {
-                    band_rec.setText("Band is recognized! ");
-                    band_rec.setTextColor(Color.GREEN);
+                    band_rec.setText(R.string.band_detected);
+                    band_rec.setTextColor(getResources().getColor(R.color.button_green));
                     bandIsReady=true;
                 }
             }
