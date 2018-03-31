@@ -80,10 +80,6 @@
                                 true,        // returnFaceLandmarks
                                 "age,occlusion"           // returnFaceAttributes: a string like "age, gender"
                         );
-                        if (result == null)
-                        {
-                            // TODO
-                        }
 
                         double averageOcclusion = getAverageOcclusion(result[0].faceLandmarks, result[0].faceRectangle);
                         Log.i(TAG, String.format("Found Occclusion: %f", averageOcclusion));
@@ -106,7 +102,6 @@
 
                     } catch (Exception e) {
                         Log.i(TAG,"Failed at detecting face in image");
-                        e.printStackTrace();
                         mainActivity.initFaceDetectionListener.onFaceNotDetected();
                     }
 
@@ -120,7 +115,7 @@
             double occlusionLeft = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
             double occlusionRight = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
             double avg_occ = (occlusionLeft + occlusionRight) / 2;
-            return avg_occ / rectangle.height;
+            return (avg_occ / rectangle.height) * 100;
         }
 
         public double getDistance(FeatureCoordinate feat1, FeatureCoordinate feat2){

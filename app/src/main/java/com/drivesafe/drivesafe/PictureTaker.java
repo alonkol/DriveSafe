@@ -5,6 +5,7 @@ import android.hardware.Camera;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.TimerTask;
 
 public class PictureTaker extends TimerTask {
@@ -26,6 +27,10 @@ public class PictureTaker extends TimerTask {
             setCameraIfNeeded();
             SurfaceTexture st = new SurfaceTexture(0);
             camera.stopPreview();
+            Camera.Parameters parameters = camera.getParameters();
+            List<Camera.Size> supportedSizes = parameters.getSupportedPictureSizes();
+            parameters.setPictureSize(supportedSizes.get(0).width, supportedSizes.get(0).height);
+            camera.setParameters(parameters);
             camera.setPreviewTexture(st);
             camera.startPreview();
             camera.takePicture( null, null, MainActivity.pictureCallback);
