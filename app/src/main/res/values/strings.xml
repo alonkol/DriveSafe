@@ -17,7 +17,7 @@
     <string name="slide_3_desc">If you go sleepy, we will set off a surprising alert.</string>
 
     <string name="slide_4_title">Hall Of Shame</string>
-    <string name="slide_4_desc">If you\'ll fail to stay alert - you\'ll find yourself in our Hall Of Shame!</string>
+    <string name="slide_4_desc">If you\'ll fail to stay alert - you\'ll find yourself in our Facebook page!</string>
     <!-- Intro Slider END -->
 
     <string name="special_notice_title">Stay Alert!</string>
@@ -27,7 +27,7 @@
     <string name="driving_warning_title">Stay Alert!</string>
     <string name="driving_alert_title">Wake Up!!!</string>
 
-    <string name="alertness_score">Alertness Score: 8.0</string>
+    <string name="alertness_score">Alertness Score: 10.0</string>
 
     <string name="face_detecting">Detecting Face...</string>
     <string name="band_detecting">Detecting Band..</string>
