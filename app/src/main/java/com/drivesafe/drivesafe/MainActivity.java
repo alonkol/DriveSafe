@@ -68,9 +68,9 @@ public class MainActivity extends AppCompatActivity {
             public void onFaceNotDetected() {
                 if (STATE == AppState.Init) {
                     face_rec.setText(R.string.face_detecting);
-                    face_rec.setTextColor(Color.GRAY);
+                    face_rec.setTextColor(Color.LTGRAY);
                     start_btn.setBackgroundColor(getResources().getColor(R.color.button_disabled));
-                    start_btn.setTextColor(Color.GRAY);
+                    start_btn.setTextColor(Color.LTGRAY);
                     faceIsReady=false;
                 }
             }
