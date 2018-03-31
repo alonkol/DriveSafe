@@ -21,7 +21,10 @@ public class AlertManager {
     private static final String TAG = "Alert Manager";
     private static Auxiliary.AlertnessLevel bandAlertnessLevel;
     private static Auxiliary.AlertnessLevel pictureAlertnessLevel;
-    private MainActivity main_activity;
+    private static double bandAlertnessScore;
+    private static double pictureAlertnessScore;
+    private static boolean bandDisabled = false;
+    private MainActivity mainActivity;
     private static Context context;
     private static boolean inCoolDown = false;
 
@@ -29,10 +32,12 @@ public class AlertManager {
     private static ByteArrayOutputStream currentImageOutputStream;
     private static final String api_endpoint = "https://prod-24.westeurope.logic.azure.com:443/workflows/41d3890ebfd54071814359c127c30e6e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BJ8QijHIX_mMxQiORHOcpODmLngNJ8S90P7qqjKQICQ";
 
-    public AlertManager(MainActivity mainActivity) {
-        main_activity = mainActivity;
+    public AlertManager(MainActivity main_activity) {
+        mainActivity = main_activity;
         context = mainActivity.getApplicationContext();
+        bandAlertnessScore = 0;
         bandAlertnessLevel = Auxiliary.AlertnessLevel.High;
+        pictureAlertnessScore = 0;
         pictureAlertnessLevel = Auxiliary.AlertnessLevel.High;
     }
 
@@ -58,37 +63,84 @@ public class AlertManager {
         UploadImageTask().execute(currentImageOutputStream);
     }
 
+    public void setBandDisabled(){
+        Log.d(TAG, "Band scoring disabled");
+        bandDisabled = true;
+    }
+
 
     public void setPictureRate(){
         if (pictureAlertnessLevel == Auxiliary.AlertnessLevel.Medium || pictureAlertnessLevel == Auxiliary.AlertnessLevel.Low){
-            main_activity.pictureTakingTimer.setHighRate();
+            mainActivity.pictureTakingTimer.setHighRate();
         }
         if (bandAlertnessLevel == Auxiliary.AlertnessLevel.Medium || bandAlertnessLevel == Auxiliary.AlertnessLevel.Low){
-            main_activity.pictureTakingTimer.setHighRate();
+            mainActivity.pictureTakingTimer.setHighRate();
         }
     }
 
-    public void setBandAlertness(Auxiliary.AlertnessLevel level){
+    public void setBandAlertness(Auxiliary.AlertnessLevel level, double score){
         Log.d(TAG, String.format("Setting band alert to %s", level));
         bandAlertnessLevel = level;
+        bandAlertnessScore = score;
         setPictureRate();
         checkIfToAlert();
     }
 
-    public void setPictureAlertness(Auxiliary.AlertnessLevel level){
+    public void setPictureAlertness(Auxiliary.AlertnessLevel level, double score){
         Log.d(TAG, String.format("Setting picture alert to %s", level));
         pictureAlertnessLevel = level;
+        pictureAlertnessScore = score;
         setPictureRate();
         checkIfToAlert();
     }
 
     public void checkIfToAlert(){
-        if (bandAlertnessLevel == Auxiliary.AlertnessLevel.Low ||
-                pictureAlertnessLevel == Auxiliary.AlertnessLevel.Low)
+        double alertnessLevel = getTotalAlertnessScore();
+        // Most likely will happen when One indicator is in Low state or both in Medium
+        if (alertnessLevel < 2.5){
             Alert(context);
-        if (bandAlertnessLevel == Auxiliary.AlertnessLevel.Medium &&
-                pictureAlertnessLevel == Auxiliary.AlertnessLevel.Medium)
-            Alert(context);
+        }
+    }
+
+    public double getTotalAlertnessScore(){
+        double pictureTotalAlertnessScore = getPictureTotalAlertnessScore();
+        if (bandDisabled){
+            Log.d(TAG, String.format("Alertness score: %f", pictureTotalAlertnessScore));
+            return pictureTotalAlertnessScore;
+        }
+        double bandTotalAlertnessScore = getBandTotalAlertnessScore();
+        double totalScore = (pictureTotalAlertnessScore + bandTotalAlertnessScore) / 2;
+        if (pictureAlertnessLevel == Auxiliary.AlertnessLevel.Medium && bandAlertnessLevel == Auxiliary.AlertnessLevel.Medium){
+            totalScore -= 3;
+        }
+        Log.d(TAG, String.format("Alertness score: %f", totalScore));
+        return Math.max(Math.min(totalScore, 10), 0);
+    }
+
+    private double getBaseAlertnessScore(Auxiliary.AlertnessLevel level){
+        switch(level){
+            case High:
+                return 7.5;
+            case Medium:
+                return 4.5;
+            case Low:
+                return 1;
+        }
+        return 0;
+    }
+
+    private double getBandTotalAlertnessScore() {
+        double score = getBaseAlertnessScore(bandAlertnessLevel);
+        score += (bandAlertnessScore * 3);
+        Log.d(TAG, String.format("Band alertness score: %f", score));
+        return score;
+    }
+
+    private double getPictureTotalAlertnessScore() {
+        double score = getBaseAlertnessScore(pictureAlertnessLevel);
+        score += (pictureAlertnessScore * 3);
+        Log.d(TAG, String.format("Picture alertness score: %f", score));
+        return score;
     }
 
     private static void turnOffCoolDown(){
@@ -135,7 +187,7 @@ public class AlertManager {
                 .post(body)
                 .build();
 
-        okhttp3.Response response = main_activity.client.newCall(request).execute();
+        okhttp3.Response response = mainActivity.client.newCall(request).execute();
         Log.i(this.TAG,String.format("Response status: %s", response.isSuccessful()));
         if (!response.isSuccessful()){
             throw new Exception("Response from app logic failed");

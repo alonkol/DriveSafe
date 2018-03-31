@@ -156,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
                     STATE = AppState.Active;
                     dbg_btn.setVisibility(View.INVISIBLE);
                     Log.d(TAG, "No Band, Started App logic");
+                    alertManager.setBandDisabled();
                 }
-
             }
         });
 

@@ -31,21 +31,21 @@ class IntervalHistory {
 
     static void setAlertnessLevel(AlertManager alertManager){
         if (history.size() < minHistory){
-            alertManager.setBandAlertness(AlertnessLevel.High);
+            alertManager.setBandAlertness(AlertnessLevel.High, 0);
             return;
         }
 
         if (variance > highVarianceThreshold){
-            alertManager.setBandAlertness(AlertnessLevel.Low);
+            alertManager.setBandAlertness(AlertnessLevel.Low, variance - highVarianceThreshold);
             return;
         }
 
         if (variance > mediumVarianceThreshold){
-            alertManager.setBandAlertness(AlertnessLevel.Medium);
+            alertManager.setBandAlertness(AlertnessLevel.Medium, variance - mediumVarianceThreshold);
             return;
         }
 
-        alertManager.setBandAlertness(AlertnessLevel.High);
+        alertManager.setBandAlertness(AlertnessLevel.High, variance);
     }
 
     private static void calcVariance(){
