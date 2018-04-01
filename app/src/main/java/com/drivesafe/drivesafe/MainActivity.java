@@ -20,10 +20,10 @@ import com.drivesafe.drivesafe.Auxiliary.*;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main Activity";
-    public static ImageView mainImage;
-    public static TextView band_rec;
-    public static TextView face_rec;
-    public static Button start_btn;
+    public ImageView mainImage;
+    public TextView band_rec;
+    public TextView face_rec;
+    public Button start_btn;
     public static Camera camera;
     public static Camera.PictureCallback pictureCallback;
     public Camera.CameraInfo cameraInfo;
@@ -41,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private final int PERMISSION_REQUEST_FOR_APP = 100;
 
     public static View driving_screen;
-    private static ImageView driving_image;
-    private static TextView driving_text;
-    private static TextView driving_score;
+    private ImageView driving_image;
+    private TextView driving_text;
+    private TextView driving_score;
     public onAlertnessScoreUpdateListener alertnessScoreUpdateListener = null;
 
     @Override
@@ -152,14 +152,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initAppLogic(){
         new DataReceiver(this).start();
-        this.pictureCallback = new PhotoHandler(getApplicationContext(), this);
-        this.band_rec = (TextView) findViewById(R.id.band_rec);
-        this.face_rec = (TextView) findViewById(R.id.face_rec);
-        this.start_btn = (Button)  findViewById(R.id.start_btn);
-        this.driving_screen = (View) findViewById(R.id.driving_screen);
-        this.driving_image = (ImageView) findViewById(R.id.driving_image);
-        this.driving_text = (TextView) findViewById(R.id.driving_text);
-        this.driving_score = (TextView) findViewById(R.id.driving_score);
+        MainActivity.pictureCallback = new PhotoHandler(getApplicationContext(), this);
+        this.band_rec = findViewById(R.id.band_rec);
+        this.face_rec = findViewById(R.id.face_rec);
+        this.start_btn = findViewById(R.id.start_btn);
+        MainActivity.driving_screen = findViewById(R.id.driving_screen);
+        this.driving_image = findViewById(R.id.driving_image);
+        this.driving_text = findViewById(R.id.driving_text);
+        this.driving_score = findViewById(R.id.driving_score);
 
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,9 +197,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPictureTaker(){
         Log.i(this.TAG, "Starting Picture Taker");
-        this.pictureTakingTimer = new PictureTakingTimer(new PictureTaker());
-        this.pictureTakingTimer.start();
-        this.pictureTakingTimer.setHighRate();
+        MainActivity.pictureTakingTimer = new PictureTakingTimer(new PictureTaker());
+        MainActivity.pictureTakingTimer.start();
+        MainActivity.pictureTakingTimer.setHighRate();
     }
 
     private void initFrontCamera(){

@@ -47,7 +47,7 @@
         public void onPictureTaken(byte[] data, Camera camera) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
             bitmap = RotateBitmap(bitmap, 270);
-            MainActivity.mainImage.setImageBitmap(bitmap);
+            mainActivity.mainImage.setImageBitmap(bitmap);
             detectAndFrame(bitmap);
         }
 

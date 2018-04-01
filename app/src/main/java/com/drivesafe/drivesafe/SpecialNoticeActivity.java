@@ -33,7 +33,7 @@ public class SpecialNoticeActivity extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
         setContentView(R.layout.activity_special_notice);
-        btnOk = (Button) findViewById(R.id.special_next);
+        btnOk = findViewById(R.id.special_next);
 
         // making notification bar transparent
         changeStatusBarColor();
