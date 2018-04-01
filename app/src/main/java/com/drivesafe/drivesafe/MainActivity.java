@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
     public static boolean faceIsReady = false;
     public static boolean bandIsReady = false;
     public boolean displaySpecialNotification = false;
+    private boolean demoMode = true;
     public static Auxiliary.AppState STATE = AppState.Init;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
-
     public static View driving_screen;
     private ImageView driving_image;
     private TextView driving_text;
@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
         this.mainImage = (ImageView)findViewById(R.id.main_image);
         this.alertManager = new  AlertManager(this);
         this.dataSender = new DataSender(this);
+        if (demoMode)
+        {
+            displaySpecialNotification = true;
+        }
         this.setOnFaceDetectionEventListener(new onFaceDetectionListener() {
             @Override
             public void onFaceDetection() {
