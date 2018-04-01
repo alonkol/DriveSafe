@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 public class SpecialNoticeActivity extends AppCompatActivity {
 
+    private static final String TAG = "Special Notice Activity";
     private Button btnOk;
 
     @Override
@@ -40,8 +41,9 @@ public class SpecialNoticeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // when pressed page home screen will be launched
-                 MainActivity.STATE = Auxiliary.AppState.Active;
+                MainActivity.STATE = Auxiliary.AppState.Active;
                 if (!MainActivity.bandIsReady) {
+                    Log.d(TAG, "No Band, Starting App logic");
                     AlertManager.setBandDisabled();
                 }
                 launchHomeScreen();
@@ -50,6 +52,7 @@ public class SpecialNoticeActivity extends AppCompatActivity {
     }
 
     private void launchHomeScreen() {
+        MainActivity.pictureTakingTimer.setHighRate();
         MainActivity.driving_screen.setVisibility(View.VISIBLE);
         finish();
     }

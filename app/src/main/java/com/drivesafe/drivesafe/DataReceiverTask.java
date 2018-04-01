@@ -22,7 +22,7 @@ class DataReceiverTask extends AsyncTask<Void, Void, Void> {
     OkHttpClient client = null;
     MainActivity mainActivity;
 
-    private final int HIGH_RISK_THRESHOLD = 1/12;
+    private final double HIGH_RISK_THRESHOLD = 1.0/12;
 
 
 
@@ -42,21 +42,21 @@ class DataReceiverTask extends AsyncTask<Void, Void, Void> {
     }
 
     public double getRiskScore() {
-        int last24HoursAlerts = getLast24HoursAlerts();
-        int lastHourAlerts = getLastHourAlerts();
+        double last24HoursAlerts = (double) getLast24HoursAlerts();
+        double lastHourAlerts = (double) getLastHourAlerts();
         if (last24HoursAlerts == 0)
         {
             return 0;
         }
-        return lastHourAlerts/last24HoursAlerts;
+        return (double)lastHourAlerts/ last24HoursAlerts;
     }
 
-    private int getLastHourAlerts() {
+    private double getLastHourAlerts() {
         JSONObject json = sendApiRequest(get1HourAlertsNumber);
         return getNumOfAlertsFromJson(json);
     }
 
-    private int getLast24HoursAlerts() {
+    private double getLast24HoursAlerts() {
         JSONObject json = sendApiRequest(get24HoursAlertsNumber);
         return getNumOfAlertsFromJson(json);
     }

@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public Activity mainActivityReference = this;
     public AlertManager alertManager;
     public DataSender dataSender;
-    public PictureTakingTimer pictureTakingTimer;
+    public static PictureTakingTimer pictureTakingTimer;
     public onFaceDetectionListener initFaceDetectionListener = null;
     public onBandDetectionListener initBandDetectionListener = null;
     public onDetectionCompletionEventListener initDetectionCompletion = null;
@@ -56,25 +56,26 @@ public class MainActivity extends AppCompatActivity {
         this.setOnFaceDetectionEventListener(new onFaceDetectionListener() {
             @Override
             public void onFaceDetection() {
-                if (!faceIsReady) {
+                if (!faceIsReady && STATE == AppState.Init) {
+                    faceIsReady=true;
                     Log.d(TAG, "Face detected!");
                     face_rec.setText(R.string.face_detected);
                     face_rec.setTextColor(getResources().getColor(R.color.button_green));
                     start_btn.setBackgroundColor(getResources().getColor(R.color.button_green));
                     start_btn.setTextColor(Color.WHITE);
-                    faceIsReady=true;
                 }
             }
 
             @Override
             public void onFaceNotDetected() {
                 if (STATE == AppState.Init) {
+                    faceIsReady=false;
                     Log.d(TAG, "Face not detected");
                     face_rec.setText(R.string.face_detecting);
                     face_rec.setTextColor(Color.LTGRAY);
                     start_btn.setBackgroundColor(getResources().getColor(R.color.button_disabled));
-                    start_btn.setTextColor(Color.LTGRAY);
-                    faceIsReady=false;
+                    start_btn.setTextColor(Color.GRAY);
+                    pictureTakingTimer.setHighRate();
                 }
             }
         });
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         this.setOnBandDetectionEventListener(new onBandDetectionListener() {
             @Override
             public void onBandDetection() {
-                if (!bandIsReady) {
+                if (!bandIsReady && STATE == AppState.Init) {
                     band_rec.setText(R.string.band_detected);
                     band_rec.setTextColor(getResources().getColor(R.color.button_green));
                     bandIsReady=true;
@@ -190,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                         if (!bandIsReady) {
                             Log.d(TAG, "No Band, Starting App logic");
                             alertManager.setBandDisabled();
+                            pictureTakingTimer.setHighRate();
                         }
                         driving_screen.setVisibility(View.VISIBLE);
                     }
@@ -208,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(this.TAG, "Starting Picture Taker");
         this.pictureTakingTimer = new PictureTakingTimer(new PictureTaker());
         this.pictureTakingTimer.start();
+        this.pictureTakingTimer.setHighRate();
     }
 
     private void initFrontCamera(){
