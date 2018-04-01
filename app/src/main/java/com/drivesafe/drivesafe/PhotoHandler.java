@@ -87,14 +87,6 @@
                         if (mainActivity.initFaceDetectionListener != null)
                             mainActivity.initFaceDetectionListener.onFaceDetection();
 
-                        //check if we can start now
-                        //TODO: change 2 for an enum
-                        if (mainActivity.bandIsReady && mainActivity.faceIsReady) {
-                            if (mainActivity.initDetectionCompletion != null) {
-                                mainActivity.initDetectionCompletion.onCompletion();
-                            }
-                        }
-
                         if (mainActivity.STATE == AppState.Active) {
                             Log.i(TAG, "Adding occlusion to history");
                             OcclusionHistory.add(averageOcclusion, mainActivity.alertManager);

@@ -91,17 +91,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        this.setOnDetectionCompletionEventListener(new onDetectionCompletionEventListener() {
-            @Override
-            public void onCompletion() {
-                if (STATE == AppState.Init)
-                {
-                    band_rec.setVisibility(View.GONE);
-                    face_rec.setVisibility(View.GONE);
-                }
-            }
-        });
-
         this.setOnAlertnessScoreUpdateListener(new onAlertnessScoreUpdateListener() {
             @Override
             public void onScoreUpdate(double alertnessScore) {
@@ -271,9 +260,7 @@ public class MainActivity extends AppCompatActivity {
         public void onCompletion();
     }
 
-    public void setOnDetectionCompletionEventListener(onDetectionCompletionEventListener eventListener) {
-        this.initDetectionCompletion = eventListener;
-    }
+
 
 
 
