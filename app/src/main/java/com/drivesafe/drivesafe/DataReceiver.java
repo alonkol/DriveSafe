@@ -1,6 +1,5 @@
 package com.drivesafe.drivesafe;
 
-import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 import org.json.JSONArray;
@@ -8,10 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 class DataReceiver extends Thread {
 
@@ -32,7 +29,7 @@ class DataReceiver extends Thread {
         double score =  getRiskScore();
         if (score > HIGH_RISK_THRESHOLD){
             Log.d(this.TAG, String.format("Risk score = %f", score));
-            mainActivity.isHighRisk = true;
+            mainActivity.displaySpecialNotification = true;
         }
     }
 

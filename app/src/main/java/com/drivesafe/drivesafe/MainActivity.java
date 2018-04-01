@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     public onDetectionCompletionEventListener initDetectionCompletion = null;
     public static boolean faceIsReady = false;
     public static boolean bandIsReady = false;
-    public boolean isHighRisk = false;
+    public boolean displaySpecialNotification = false;
     public static Auxiliary.AppState STATE = AppState.Init;
     private final int PERMISSION_REQUEST_FOR_APP = 100;
 
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (faceIsReady) {
                     start_btn.setVisibility(View.INVISIBLE);
-                    if (isHighRisk) {
+                    if (displaySpecialNotification) {
                         try {
                             startActivity(new Intent(MainActivity.this, SpecialNoticeActivity.class));
                         }catch (Exception e)
