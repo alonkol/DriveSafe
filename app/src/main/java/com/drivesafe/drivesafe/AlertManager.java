@@ -25,7 +25,7 @@ class AlertManager {
     private static Context context;
     private static boolean inCoolDown = false;
 
-    private static double mediumRiskThreshold = 0.7;
+    private static final double mediumRiskThreshold = 0.7;
     static double mediumRiskScore = 7.0;
     static double highRiskScore = 4.0;
 
