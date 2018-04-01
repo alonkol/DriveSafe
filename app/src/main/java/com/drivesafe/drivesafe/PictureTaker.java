@@ -29,7 +29,8 @@ public class PictureTaker extends TimerTask {
             camera.stopPreview();
             Camera.Parameters parameters = camera.getParameters();
             List<Camera.Size> supportedSizes = parameters.getSupportedPictureSizes();
-            parameters.setPictureSize(supportedSizes.get(0).width, supportedSizes.get(0).height);
+            int listSize = supportedSizes.size();
+            parameters.setPictureSize(supportedSizes.get(listSize/2).width, supportedSizes.get(listSize/2).height);
             camera.setParameters(parameters);
             camera.setPreviewTexture(st);
             camera.startPreview();
