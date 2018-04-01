@@ -67,7 +67,7 @@ public class DetectionTask extends AsyncTask<ByteArrayOutputStream, String, Phot
     }
 
     private double getAverageOcclusion(FaceLandmarks landmarks, FaceRectangle rectangle){
-        double occlusionLeft = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
+        double occlusionLeft = getDistance(landmarks.eyeLeftTop, landmarks.eyeLeftBottom);
         double occlusionRight = getDistance(landmarks.eyeRightTop, landmarks.eyeRightBottom);
         double avg_occ = (occlusionLeft + occlusionRight) / 2;
         return (avg_occ / rectangle.height) * 100;
