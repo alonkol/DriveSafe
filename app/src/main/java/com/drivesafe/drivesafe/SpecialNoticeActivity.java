@@ -44,7 +44,6 @@ public class SpecialNoticeActivity extends AppCompatActivity {
                 MainActivity.STATE = Auxiliary.AppState.Active;
                 if (!MainActivity.bandIsReady) {
                     Log.d(TAG, "No Band, Starting App logic");
-                    AlertManager.setBandDisabled();
                 }
                 launchHomeScreen();
             }

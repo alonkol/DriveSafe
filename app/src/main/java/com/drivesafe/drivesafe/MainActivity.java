@@ -207,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
                         STATE = AppState.Active;
                         if (!bandIsReady) {
                             Log.d(TAG, "No Band, Starting App logic");
-                            alertManager.setBandDisabled();
                             pictureTakingTimer.setHighRate();
                         }
                         driving_screen.setVisibility(View.VISIBLE);

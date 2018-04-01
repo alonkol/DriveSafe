@@ -3,16 +3,11 @@ package com.drivesafe.drivesafe;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.drivesafe.drivesafe.Auxiliary.*;
-
 class IntervalHistory {
 
     private static List<Double> history = new LinkedList<>();
 
     private static double variance;
-
-    private static final double highVarianceThreshold = 0.3;
-    private static final double mediumVarianceThreshold = 0.1;
 
     private static final int minHistory = 10;
     private static final int maxHistory = 300;
@@ -29,7 +24,7 @@ class IntervalHistory {
         setAlertnessLevel(alertManager);
     }
 
-    static void setAlertnessLevel(AlertManager alertManager){
+    private static void setAlertnessLevel(AlertManager alertManager){
         if (history.size() < minHistory){
             alertManager.setBandAlertness(1.0);
             return;

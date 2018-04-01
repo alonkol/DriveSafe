@@ -5,8 +5,6 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.drivesafe.drivesafe.Auxiliary.*;
-
 class OcclusionHistory {
 
     private static List<Double> history = new LinkedList<>();
@@ -29,7 +27,7 @@ class OcclusionHistory {
         setPictureAlertness(alertManager);
     }
 
-    static void setPictureAlertness(AlertManager alertManager){
+    private static void setPictureAlertness(AlertManager alertManager){
         if (history.size() < minHistory){
             alertManager.setPictureAlertness(1.0);
             return;
