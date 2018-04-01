@@ -15,7 +15,7 @@ import com.microsoft.band.sensors.BandRRIntervalEventListener;
 import com.microsoft.band.sensors.HeartRateConsentListener;
 import com.drivesafe.drivesafe.Auxiliary.*;
 
-class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
+class RRIntervalTaker extends Thread {
 
 
     private static final String TAG = "RRInterval";
@@ -24,12 +24,11 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
     // band
     private BandClient client = null;
 
-    public RRIntervalSubscriptionTask(MainActivity mainActivity) {
+    public RRIntervalTaker(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
 
-    @Override
-    protected Void doInBackground(Void... params) {
+    public void run() {
         try {
             if (getConnectedBandClient()) {
                 int hardwareVersion = Integer.parseInt(client.getHardwareVersion().await());
@@ -73,7 +72,6 @@ class RRIntervalSubscriptionTask extends AsyncTask<Void, Void, Void> {
             // TODO: handle exception
             e.printStackTrace();
         }
-        return null;
     }
 
     private boolean getConnectedBandClient() throws InterruptedException, BandException {

@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFaceNotDetected() {
-                if (STATE == AppState.Init) {
+                if (faceIsReady && STATE == AppState.Init) {
                     faceIsReady=false;
                     Log.d(TAG, "Face not detected");
                     face_rec.setText(R.string.face_detecting);
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAppLogic(){
-        new DataReceiverTask((this)).execute();
+        new DataReceiver(this).start();
         this.pictureCallback = new PhotoHandler(getApplicationContext(), this);
         this.band_rec = (TextView) findViewById(R.id.band_rec);
         this.face_rec = (TextView) findViewById(R.id.face_rec);
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         // Start thread that takes picture every 5 seconds and starts 1.5 seconds after app init
         startPictureTaker();
         // Start thread that takes RR interval
-        new RRIntervalSubscriptionTask(this).execute();
+        new RRIntervalTaker(this).start();
     }
 
     private void startPictureTaker(){

@@ -13,7 +13,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-class DataReceiverTask extends AsyncTask<Void, Void, Void> {
+class DataReceiver extends Thread {
 
     private static String TAG = "DataReceiverTask";
     private final static String get24HoursAlertsNumber = "https://api.applicationinsights.io/v1/apps/ae986fd1-75ce-4773-b966-c364d6802517/metrics/customMetrics%2FAlert?timespan=P1D&interval=P1D&aggregation=count&top=1";
@@ -24,21 +24,17 @@ class DataReceiverTask extends AsyncTask<Void, Void, Void> {
 
     private final double HIGH_RISK_THRESHOLD = 1.0/12;
 
-
-
-    public DataReceiverTask(MainActivity mainActivity) {
+    public DataReceiver(MainActivity mainActivity) {
         this.client = new OkHttpClient();
         this.mainActivity = mainActivity;
     }
 
-    @Override
-    protected Void doInBackground(Void... voids) {
+    public void run() {
         double score =  getRiskScore();
         if (score > HIGH_RISK_THRESHOLD){
             Log.d(this.TAG, String.format("Risk score = %f", score));
             mainActivity.isHighRisk = true;
         }
-        return null;
     }
 
     public double getRiskScore() {
