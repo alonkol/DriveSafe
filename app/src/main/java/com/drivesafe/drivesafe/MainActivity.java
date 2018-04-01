@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     public AlertManager alertManager;
     public DataSender dataSender;
     public static PictureTakingTimer pictureTakingTimer;
-    public onFaceDetectionListener initFaceDetectionListener = null;
+    public static onFaceDetectionListener initFaceDetectionListener = null;
     public onBandDetectionListener initBandDetectionListener = null;
     public onDetectionCompletionEventListener initDetectionCompletion = null;
     public static boolean faceIsReady = false;
@@ -59,10 +59,16 @@ public class MainActivity extends AppCompatActivity {
                 if (!faceIsReady && STATE == AppState.Init) {
                     faceIsReady=true;
                     Log.d(TAG, "Face detected!");
-                    face_rec.setText(R.string.face_detected);
-                    face_rec.setTextColor(getResources().getColor(R.color.button_green));
-                    start_btn.setBackgroundColor(getResources().getColor(R.color.button_green));
-                    start_btn.setTextColor(Color.WHITE);
+                    try {
+                        runOnUiThread(new Runnable() {@Override public void run() {
+                            face_rec.setText(R.string.face_detected);
+                            face_rec.setTextColor(getResources().getColor(R.color.button_green));
+                            start_btn.setBackgroundColor(getResources().getColor(R.color.button_green));
+                            start_btn.setTextColor(Color.WHITE);
+                        }});
+                    } catch (Exception e) {
+                        Log.e("FaceDetectedException", e.toString());
+                    }
                 }
             }
 
@@ -71,11 +77,19 @@ public class MainActivity extends AppCompatActivity {
                 if (faceIsReady && STATE == AppState.Init) {
                     faceIsReady=false;
                     Log.d(TAG, "Face not detected");
-                    face_rec.setText(R.string.face_detecting);
-                    face_rec.setTextColor(Color.LTGRAY);
-                    start_btn.setBackgroundColor(getResources().getColor(R.color.button_disabled));
-                    start_btn.setTextColor(Color.GRAY);
-                    pictureTakingTimer.setHighRate();
+                    try {
+                        runOnUiThread(new Runnable() {@Override public void run()
+                        {
+                            face_rec.setText(R.string.face_detecting);
+                            face_rec.setTextColor(Color.LTGRAY);
+                            start_btn.setBackgroundColor(getResources().getColor(R.color.button_disabled));
+                            start_btn.setTextColor(Color.GRAY);
+                        }});
+                        pictureTakingTimer.setHighRate();
+                    } catch (Exception e) {
+                        Log.e("NotDetectedException", e.toString());
+                    }
+
                 }
             }
         });
@@ -84,8 +98,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onBandDetection() {
                 if (!bandIsReady && STATE == AppState.Init) {
-                    band_rec.setText(R.string.band_detected);
-                    band_rec.setTextColor(getResources().getColor(R.color.button_green));
+                    runOnUiThread(new Runnable() {@Override public void run()
+                    {
+                        band_rec.setText(R.string.band_detected);
+                        band_rec.setTextColor(getResources().getColor(R.color.button_green));
+                    }});
                     bandIsReady=true;
                 }
             }
@@ -96,23 +113,34 @@ public class MainActivity extends AppCompatActivity {
             public void onScoreUpdate(double alertnessScore) {
                 if (STATE == AppState.Active)
                 {
-                    driving_score.setText(String.format("Alertness Score: %.1f", alertnessScore));
+                    final int new_text;
+                    final int new_image;
+                    final int new_color;
                     if (alertnessScore < AlertManager.highRiskScore){
-                        driving_text.setText(R.string.driving_alert_title);
-                        driving_image.setImageResource(R.drawable.face_fear);
-                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_alert));
+                        new_text = R.string.driving_alert_title;
+                        new_image = R.drawable.face_fear;
+                        new_color = getResources().getColor(R.color.driving_alert);
                     }
                     else if (alertnessScore < AlertManager.mediumRiskScore){
-                        driving_text.setText(R.string.driving_warning_title);
-                        driving_image.setImageResource(R.drawable.face_worried);
-                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_warning));
+                        new_text = R.string.driving_warning_title;
+                        new_image = R.drawable.face_worried;
+                        new_color = getResources().getColor(R.color.driving_warning);
                     }
                     else{
-                        driving_text.setText(R.string.driving_normal_title);
-                        driving_image.setImageResource(R.drawable.face_smile);
-                        driving_screen.setBackgroundColor(getResources().getColor(R.color.driving_normal));
-
+                        new_text = R.string.driving_normal_title;
+                        new_image = R.drawable.face_smile;
+                        new_color = getResources().getColor(R.color.driving_normal);
                     }
+
+                    final double alertness = alertnessScore;
+                    runOnUiThread(new Runnable() {@Override public void run()
+                    {
+                        driving_score.setText(String.format("Alertness Score: %.1f", alertness));
+                        driving_text.setText(new_text);
+                        driving_image.setImageResource(new_image);
+                        driving_screen.setBackgroundColor(new_color);
+                    }});
+
                 }
             }
         });
