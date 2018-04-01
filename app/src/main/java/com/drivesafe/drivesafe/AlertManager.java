@@ -1,6 +1,5 @@
 package com.drivesafe.drivesafe;
 
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
@@ -18,25 +17,24 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-public class AlertManager {
+class AlertManager {
     private static final String TAG = "Alert Manager";
     private static double bandAlertnessScore;
     private static double pictureAlertnessScore;
-    private static boolean bandDisabled = false;
     private MainActivity mainActivity;
     private static Context context;
     private static boolean inCoolDown = false;
 
     private static double mediumRiskThreshold = 0.7;
-    public static double mediumRiskScore = 7.0;
-    public static double highRiskScore = 4.0;
+    static double mediumRiskScore = 7.0;
+    static double highRiskScore = 4.0;
 
-    public static final MediaType JSON = MediaType.parse("application/json");
+    private static final MediaType JSON = MediaType.parse("application/json");
     private static ByteArrayOutputStream currentImageOutputStream;
     private static final String api_endpoint = "https://prod-24.westeurope.logic.azure.com:443/workflows/41d3890ebfd54071814359c127c30e6e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BJ8QijHIX_mMxQiORHOcpODmLngNJ8S90P7qqjKQICQ";
-    OkHttpClient client = null;
+    private OkHttpClient client = null;
 
-    public AlertManager(MainActivity main_activity) {
+    AlertManager(MainActivity main_activity) {
         mainActivity = main_activity;
         context = mainActivity.getApplicationContext();
         bandAlertnessScore = 1.0;
@@ -44,11 +42,11 @@ public class AlertManager {
         client = new OkHttpClient();
     }
 
-    public void setCurrentImage(ByteArrayOutputStream lastImageOutputStream) {
+    void setCurrentImage(ByteArrayOutputStream lastImageOutputStream) {
         AlertManager.currentImageOutputStream = lastImageOutputStream;
     }
 
-    public void Alert(Context appContext){
+    private void Alert(Context appContext){
         if (inCoolDown){
             Log.d(TAG, "Alert request received but in cool down");
             return;
@@ -66,33 +64,29 @@ public class AlertManager {
         UploadImageTask().execute(currentImageOutputStream);
     }
 
-    public static void setBandDisabled(){
-        Log.d(TAG, "Band scoring disabled");
-        bandDisabled = true;
-    }
-
-
-    public void setPictureRate(){
+    private void setPictureRate(){
         if (bandAlertnessScore < mediumRiskThreshold || pictureAlertnessScore < mediumRiskThreshold){
-            mainActivity.pictureTakingTimer.setHighRate();
+            MainActivity.pictureTakingTimer.setHighRate();
         }
     }
 
-    public void setBandAlertness(double score){
+    void setBandAlertness(double score){
+        Log.d(TAG, String.format("Band score: %f", score));
         bandAlertnessScore = score;
         setPictureRate();
         checkIfToAlert();
         mainActivity.alertnessScoreUpdateListener.onScoreUpdate(getTotalAlertnessScore());
     }
 
-    public void setPictureAlertness(double score){
+    void setPictureAlertness(double score){
+        Log.d(TAG, String.format("Picture score: %f", score));
         pictureAlertnessScore = score;
         setPictureRate();
         checkIfToAlert();
         mainActivity.alertnessScoreUpdateListener.onScoreUpdate(getTotalAlertnessScore());
     }
 
-    public void checkIfToAlert(){
+    private void checkIfToAlert(){
         double alertnessLevel = getTotalAlertnessScore();
         // Most likely will happen when One indicator is in Low state or both in Medium
         if (alertnessLevel < highRiskScore){
@@ -100,17 +94,10 @@ public class AlertManager {
         }
     }
 
-    public double getTotalAlertnessScore(){
-        if (bandDisabled){
-            Log.d(TAG, String.format("Alertness score: %f", pictureAlertnessScore));
-            return Math.max(Math.min(10 * pictureAlertnessScore, 10), 0);
-        }
-
-        double pictureWeight = 0.7; // picture score is more significant
-        double weightedScore = pictureWeight*pictureAlertnessScore + (1 - pictureWeight)*bandAlertnessScore;
-        double finalScore = Math.max(Math.min(10 * weightedScore, 10), 0);
-
-        Log.d(TAG, String.format("Alertness score: %f", finalScore));
+    // Ignores band for demo purposes.
+    private double getTotalAlertnessScore(){
+        double finalScore = Math.max(Math.min(10 * pictureAlertnessScore, 10), 0);
+        Log.d(TAG, String.format("Total Alertness score: %f", finalScore));
         return finalScore;
     }
 
@@ -146,7 +133,7 @@ public class AlertManager {
         };
     }
 
-    public String uploadToOD(ByteArrayOutputStream byteArrayOutputStream) throws Exception {
+    private void uploadToOD(ByteArrayOutputStream byteArrayOutputStream) throws Exception {
         JSONObject requestObject = new JSONObject();
 
         requestObject.put("name", String.format("img%s.jpg", DateFormat.getDateTimeInstance().format(new Date())));
@@ -162,7 +149,5 @@ public class AlertManager {
         if (!response.isSuccessful()){
             throw new Exception("Response from app logic failed");
         }
-
-        return "YES!!!";
     }
 }
