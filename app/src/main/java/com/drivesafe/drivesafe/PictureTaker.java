@@ -27,11 +27,6 @@ public class PictureTaker extends TimerTask {
             setCameraIfNeeded();
             SurfaceTexture st = new SurfaceTexture(0);
             camera.stopPreview();
-            Camera.Parameters parameters = camera.getParameters();
-            List<Camera.Size> supportedSizes = parameters.getSupportedPictureSizes();
-            int listSize = supportedSizes.size();
-            parameters.setPictureSize(supportedSizes.get(listSize/2).width, supportedSizes.get(listSize/2).height);
-            camera.setParameters(parameters);
             camera.setPreviewTexture(st);
             camera.startPreview();
             camera.takePicture( null, null, MainActivity.pictureCallback);

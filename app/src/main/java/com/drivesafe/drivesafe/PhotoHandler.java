@@ -40,7 +40,9 @@
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             mainActivity.alertManager.setCurrentImage(outputStream);
-            new DetectionTask(mainActivity).execute(outputStream);
+            ByteArrayOutputStream outputStreamCompressed = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 10, outputStreamCompressed);
+            new DetectionTask(mainActivity).execute(outputStreamCompressed);
         }
 
         static class Face {

@@ -16,6 +16,8 @@ import android.widget.*;
 import android.hardware.Camera;
 import com.drivesafe.drivesafe.Auxiliary.*;
 
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -233,6 +235,12 @@ public class MainActivity extends AppCompatActivity {
         if (getPackageManager()
             .hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
                 camera = Camera.open(this.findFrontFacingCamera());
+                Camera.Parameters parameters = camera.getParameters();
+                List<Camera.Size> supportedSizes = parameters.getSupportedPictureSizes();
+                int listSize = supportedSizes.size();
+                parameters.setPictureSize(supportedSizes.get(listSize/2).width,
+                        supportedSizes.get(listSize/2).height);
+                camera.setParameters(parameters);
         } else {
             finish(); // no Camera on device
         }
