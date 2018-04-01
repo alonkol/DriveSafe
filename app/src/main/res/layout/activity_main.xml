@@ -33,7 +33,7 @@
                 android:layout_alignEnd="@+id/band_rec"
                 android:layout_marginBottom="8dp"
                 android:text="@string/face_detecting"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/button_disabled"
                 android:textSize="30sp" />
 
             <TextView
@@ -44,7 +44,7 @@
                 android:layout_above="@+id/start_btn"
                 android:layout_marginBottom="8dp"
                 android:text="@string/band_detecting"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/button_disabled"
                 android:textSize="30sp" />
 
             <Button

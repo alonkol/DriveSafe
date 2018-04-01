@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {@Override public void run()
                         {
                             face_rec.setText(R.string.face_detecting);
-                            face_rec.setTextColor(Color.LTGRAY);
+                            face_rec.setTextColor(getResources().getColor(R.color.button_disabled));
                             start_btn.setBackgroundColor(getResources().getColor(R.color.button_disabled));
                             start_btn.setTextColor(Color.GRAY);
                         }});
